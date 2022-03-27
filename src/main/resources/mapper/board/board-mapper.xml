@@ -46,7 +46,7 @@
 		<result property="postTitle"				column="POST_TITLE"				jdbcType="VARCHAR"></result>
 		<result property="postContents"				column="POST_CONTENTS"			jdbcType="VARCHAR"></result>
 		<result property="postDate"					column="POST_DATE"				jdbcType="VARCHAR"></result>
-		<result property="postThomsnail"			column="POST_THOMBNAIL"			jdbcType="VARCHAR"></result>
+		<result property="postThombnail"			column="POST_THOMBNAIL"			jdbcType="VARCHAR"></result>
 		<result property="postFile"					column="POST_FILE"				jdbcType="VARCHAR"></result>
 		<result property="postViewCount"			column="POST_VIEWCOUNT"			jdbcType="NUMERIC"></result>
 		<result property="postBoard.boardNo"		column="BOARD_NO"				jdbcType="NUMERIC"></result>
@@ -140,7 +140,7 @@
 			   #{postBoard.boardNo},
 			   #{postTitle : VARCHAR},
 			   #{postContents : VARCHAR},
-			   REGDATE,
+			   SYSDATE,
 			   #{postFile : VARCHAR},
 			   #{postThombnail : VARCHAR},
 			   #{postViewCount : NUMERIC},
@@ -341,8 +341,14 @@
 	<delete id="deleteChoiceBoard" parameterType="int">
 		DELETE
 		FROM board
-		WHERE board_no = #{boardNo}
+		WHERE board_no = #{value}
 	</delete>
+	
+	<delete id="deleteChoicePost" parameterType="int">
+		DELETE
+		FROM post
+		WHERE post_no = #{value}
+	</delete>	
 	
 	<update id="updateBoard" parameterType="board">
 		UPDATE board

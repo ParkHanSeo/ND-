@@ -93,6 +93,11 @@ public class BoardServiceImpl implements BoardService {
 	public void deleteChoiceBoard(int boardNo) throws Exception {
 		boardDao.deleteChoiceBoard(boardNo);
 	}
+	
+	@Override
+	public void deleteChoicePost(int postNo) throws Exception {
+		boardDao.deleteChoicePost(postNo);
+	}
 
 	@Override
 	public int updateBoard(Board board) throws Exception {
@@ -108,6 +113,8 @@ public class BoardServiceImpl implements BoardService {
 	public int updateOption(BoardOption boardOption) throws Exception {
 		return boardDao.updateOption(boardOption);
 	}
+
+
 
 
 

@@ -33,7 +33,7 @@
 
 <!-- Google Font -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
-<style>.cke{visibility:hidden;}</style><script type="text/javascript" src="http://mir9.co.kr/resource/js/ckeditor4.7.2/config.js?t=H7HD"></script><style type="text/css">.jqstooltip { position: absolute;left: 0px;top: 0px;visibility: hidden;background: rgb(0, 0, 0) transparent;background-color: rgba(0,0,0,0.6);filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000);-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000)";color: white;font: 10px arial, san serif;text-align: left;white-space: nowrap;padding: 5px;border: 1px solid white;box-sizing: content-box;z-index: 10000;}.jqsfield { color: white;font: 10px arial, san serif;text-align: left;}</style><link rel="stylesheet" type="text/css" href="http://mir9.co.kr/resource/js/ckeditor4.7.2/skins/office2013/editor.css?t=H7HD"><script type="text/javascript" src="http://mir9.co.kr/resource/js/ckeditor4.7.2/lang/ko.js?t=H7HD"></script><script type="text/javascript" src="http://mir9.co.kr/resource/js/ckeditor4.7.2/styles.js?t=H7HD"></script><script type="text/javascript" src="http://mir9.co.kr/resource/js/ckeditor4.7.2/plugins/tableresize/plugin.js?t=H7HD"></script><link rel="stylesheet" type="text/css" href="http://mir9.co.kr/resource/js/ckeditor4.7.2/plugins/scayt/dialogs/dialog.css"><link rel="stylesheet" type="text/css" href="http://mir9.co.kr/resource/js/ckeditor4.7.2/plugins/tableselection/styles/tableselection.css">
+
 
 <script type="text/javascript">
 
@@ -43,23 +43,30 @@
 		$("#deleteChoiceBoard").on("click", function(){
 			
 			var boardArr = new Array();
-			alert("asd")
 			
 			$("input[class='boardNo']:checked").each(function(){
 				boardArr.push($(this).val());
-			});
+ 			});
+			
+			alert(boardArr)
 			
 	  		$.ajax({
   			 	 url : "/mir9/board/deleteChoiceBoard",
 	  		  	 type : "POST",
-  		  	 	 data : { boardNo : boardArr },
+  		  	 	 data : { 
+  		  	 		boardArr : boardArr 
+  		  	 	 },
     		 	 success : function(result){
-   		   	 		
+    		 		if(result == 1){
+    		 		 	location.href = "/mir9/board/boardList";
+   		   	 	 	} else {
+   		   	 	 		alert("삭제 실패")
+   		   	 	 	}
   		  	 	 }
   		  	 	 
 	  		});		
 	  		alert("삭제가 완료되었습니다.")
-	  		location.href = "mir9/board/listBoard";
+	  		//location.href = "mir9/board/listBoard";
 		})	
 		//board 선택삭제 종료
 		

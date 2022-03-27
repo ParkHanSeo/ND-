@@ -104,6 +104,12 @@ public class BoardDaoImpl implements BoardDao {
 		sqlSession.delete("board.deleteChoiceBoard", boardNo);
 	}
 	
+	//게시글 선택 삭제
+	@Override
+	public void deleteChoicePost(int postNo) throws Exception {
+		sqlSession.delete("board.deleteChoicePost", postNo);
+	}
+	
 	//게시판 수정 (게시판, 권한, 옵션) 시작 //////////////////////////////
 	@Override
 	public int updateBoard(Board board) throws Exception {
@@ -126,6 +132,8 @@ public class BoardDaoImpl implements BoardDao {
 	public int getTotalCount2(Map<String, Object> map) {
 		return sqlSession.selectOne("board.getTotalCount2", map);
 	}
+
+
 
 
 	

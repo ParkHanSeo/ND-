@@ -31,10 +31,38 @@
 
 <!-- Google Font -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
-<style>.cke{visibility:hidden;}</style><script type="text/javascript" src="http://mir9.co.kr/resource/js/ckeditor4.7.2/config.js?t=H7HD"></script><style type="text/css">.jqstooltip { position: absolute;left: 0px;top: 0px;visibility: hidden;background: rgb(0, 0, 0) transparent;background-color: rgba(0,0,0,0.6);filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000);-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000)";color: white;font: 10px arial, san serif;text-align: left;white-space: nowrap;padding: 5px;border: 1px solid white;box-sizing: content-box;z-index: 10000;}.jqsfield { color: white;font: 10px arial, san serif;text-align: left;}</style><link rel="stylesheet" type="text/css" href="http://mir9.co.kr/resource/js/ckeditor4.7.2/skins/office2013/editor.css?t=H7HD"><script type="text/javascript" src="http://mir9.co.kr/resource/js/ckeditor4.7.2/lang/ko.js?t=H7HD"></script><script type="text/javascript" src="http://mir9.co.kr/resource/js/ckeditor4.7.2/styles.js?t=H7HD"></script><script type="text/javascript" src="http://mir9.co.kr/resource/js/ckeditor4.7.2/plugins/tableresize/plugin.js?t=H7HD"></script><link rel="stylesheet" type="text/css" href="http://mir9.co.kr/resource/js/ckeditor4.7.2/plugins/scayt/dialogs/dialog.css"><link rel="stylesheet" type="text/css" href="http://mir9.co.kr/resource/js/ckeditor4.7.2/plugins/tableselection/styles/tableselection.css">
 
 <script type="text/javascript">
+	
+	$(function(){
 
+		//post 선택삭제 시작
+		$("#deleteChoicePost").on("click", function(){
+			
+			var postArr = new Array();
+			var boardNo = $("input[name='boardNo']").val();
+			
+			
+			$("input[class='postNo']:checked").each(function(){
+				postArr.push($(this).val());
+			});
+			
+	  		$.ajax({
+  			 	 url : "/mir9/board/deleteChoicePost",
+	  		  	 type : "POST",
+  		  	 	 data : { postArr : postArr },
+    		 	 success : function(result){
+   		   	 		
+  		  	 	 }
+  		  	 	 
+	  		});		
+	  		alert("삭제가 완료되었습니다.")
+	  		location.href = "/mir9/board/postList?boardNo="+boardNo;
+		})		
+		
+	})
+	
+	
 	function fncPost(){
 		
 		$.ajax({
@@ -58,7 +86,12 @@
 	}
 
 </script>
-
+	<script>
+    window.onload = function(){
+    	CKEDITOR.replace('editor',{filebrowserUploadUrl:'/mir9/board/imageUpload'})
+    };
+    </script>
+<script src="${pageContext.request.contextPath}/resources/ckeditor_4.18.0_0efc8d0dbe1a/ckeditor/ckeditor.js"></script>
 </head>
 
 
@@ -83,7 +116,6 @@
                     <label style="margin-top:5px;">총 ${resultPage.totalCount} 건</label>
                     <div class="box-tools pull-right" style="margin-bottom:5px;">
                     <form name="form_search" method="post" action="?tpf=admin/board/list">
-                    <input type="hidden" name="board_code" value="3">
                         <div class="has-feedback">
                         <span>
                         <input type="text" name="keyword" id="keyword" value="" class="form-control input-sm" placeholder="검색"/>
@@ -102,11 +134,23 @@
 
                     <table class="table table-bordered table-hover">
                     <form name="form_list" method="post" action="?tpf=admin/board/process">
-		            <input type="hidden" name="mode" id="mode">
-		            <input type="hidden" name="board_code" value="3">
                     <thead>
                     <tr>
-                        <td style="width:30px;"><input type="checkbox" name="select_all" onclick=selectAllCheckBox('form_list'); /></td>
+                        <td style="width:30px;">
+                      		<div class="allCheck">
+								<input type="checkbox" name="allCheck" id="allCheck" /><label for="allCheck"></label>
+									<script>
+										$("#allCheck").click(function() {
+											var chk = $("#allCheck").prop("checked");
+											if (chk) {
+												$('.postNo').prop("checked", true);
+											} else {
+												$('.postNo').prop("checked", false);
+											}
+										});
+									</script>
+							</div>
+                        </td>
                         <td style="width:60px;">NO</td>
                         <td>제목</td>
                         <td style="width:100px;">작성자</td>
@@ -127,7 +171,16 @@
 	                    	   </c:if>
 	                    	   <c:if test="${!empty post.postNo}">
 	                    		<tr>
-	                    			<td><input type="checkbox" name="list[]" value="69"></td>
+		                        	<td>
+				                        <div>
+				                        	<input type="checkbox" class="postNo" name="postNo"  value="${post.postNo}" />
+				                        	<script>
+												$(".postNo").click(function() {
+													$("#allCheck").prop("checked", false);
+												});
+											</script>
+										</div>
+		                        	</td>
 	                    			<td>${ i }</td>
 	                    			<td align="left">${post.postTitle}</td>
 	                    			<td>${member.lastName}${member.firstName}</td>
@@ -137,14 +190,14 @@
 	                    			<td><button type="button" onclick="onclick_update(69);" class="btn btn-primary btn-xs">상세보기</button></td>
 	                    		</tr>
 	                    		</c:if>
-	                    	 </c:forEach>                    	                   
+	                    	 </c:forEach>                  	                   
       				</tbody>
       				
       				</form>
                     </table>
                     <br>
 
-                    <button type="button" onclick="selectDelete()" class="btn btn-danger btn-sm"><i class="fa fa-minus-square"></i> 선택삭제</button>
+                    <button type="button" id="deleteChoicePost" class="btn btn-danger btn-sm"><i class="fa fa-minus-square"></i> 선택삭제</button>
                     <button type="button" onclick="fncPost()" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalContent"><i class="fa fa-plus-square"></i> 글 등록</button>
                     <button type="button" onclick="onclickCopyData('copyData')" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#modalContent2"><i class="fa fa-random"></i> 게시물 복사</button>
                     <button type="button" onclick="onclickCopyData('moveData')" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#modalContent3"><i class="fa fa-random"></i> 게시물 이전</button>
@@ -167,7 +220,7 @@
 <jsp:include page="/WEB-INF/views/board/addPost.jsp"/>
 <jsp:include page="/WEB-INF/views/board/boardCopy.jsp"/>
 <jsp:include page="/WEB-INF/views/board/boardChange.jsp"/>
-<script src="//mir9.co.kr/resource/js/ckeditor4.7.2/ckeditor.js"></script>
+<script src="//mir9.co.kr/resource/js/ckeditor4.7.2/.js"></script>
 </div><!-- /.content-wrapper -->
 
 <jsp:include page="/WEB-INF/views/common/footer.jsp"></jsp:include>

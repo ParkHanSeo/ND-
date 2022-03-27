@@ -52,6 +52,9 @@ public interface BoardDao {
 	//게시판 선택 삭제
 	public void deleteChoiceBoard(int boardNo) throws Exception;
 	
+	//게시글 선택 삭제
+	public void deleteChoicePost(int postNo) throws Exception;	
+	
 	//게시판 수정 (게시판, 권한, 옵션)
 	public int updateBoard(Board board) throws Exception;
 	public int updateAuthority(BoardAuthority boardAuthority) throws Exception;
