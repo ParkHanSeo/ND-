@@ -86,11 +86,7 @@
 	}
 
 </script>
-	<script>
-    window.onload = function(){
-    	CKEDITOR.replace('editor',{filebrowserUploadUrl:'/mir9/board/imageUpload'})
-    };
-    </script>
+
 <script src="${pageContext.request.contextPath}/resources/ckeditor_4.18.0_0efc8d0dbe1a/ckeditor/ckeditor.js"></script>
 </head>
 
@@ -187,7 +183,9 @@
 	                    			<td>${post.postDate}</td>
 	                    			<td>${post.postViewCount}</td>
 	                    			<td>${post.postNo }</td>
-	                    			<td><button type="button" onclick="onclick_update(69);" class="btn btn-primary btn-xs">상세보기</button></td>
+	                    			<td><button type="button" name="getPostBotton" data-toggle="modal" data-target="#modalContent4" class="btn btn-primary btn-xs" value="${post.postNo}">상세보기
+	                    				<input type="hidden" value="${member.memberNo}">
+	                    			</button></td>
 	                    		</tr>
 	                    		</c:if>
 	                    	 </c:forEach>                  	                   
@@ -199,8 +197,8 @@
 
                     <button type="button" id="deleteChoicePost" class="btn btn-danger btn-sm"><i class="fa fa-minus-square"></i> 선택삭제</button>
                     <button type="button" onclick="fncPost()" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalContent"><i class="fa fa-plus-square"></i> 글 등록</button>
-                    <button type="button" onclick="onclickCopyData('copyData')" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#modalContent2"><i class="fa fa-random"></i> 게시물 복사</button>
-                    <button type="button" onclick="onclickCopyData('moveData')" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#modalContent3"><i class="fa fa-random"></i> 게시물 이전</button>
+                    <button type="button" onclick="fncBoardTitle2()" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#modalContent2"><i class="fa fa-random"></i> 게시물 복사</button>
+                    <button type="button" onclick="fncBoardTitle()" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#modalContent3"><i class="fa fa-random"></i> 게시물 이전</button>
 
                     <div style="text-align:right;">
                                             </div>
@@ -218,9 +216,9 @@
     <input type="file" name="file[]" class="form-control input-sm" style="width:100%; display:inline; margin-bottom:10px;">
 </div>
 <jsp:include page="/WEB-INF/views/board/addPost.jsp"/>
+<jsp:include page="/WEB-INF/views/board/getPost.jsp"/>
 <jsp:include page="/WEB-INF/views/board/boardCopy.jsp"/>
 <jsp:include page="/WEB-INF/views/board/boardChange.jsp"/>
-<script src="//mir9.co.kr/resource/js/ckeditor4.7.2/.js"></script>
 </div><!-- /.content-wrapper -->
 
 <jsp:include page="/WEB-INF/views/common/footer.jsp"></jsp:include>

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.naedam.mir9.board.model.service.BoardService;
 import com.naedam.mir9.board.model.vo.Board;
+import com.naedam.mir9.board.model.vo.Post;
 import com.naedam.mir9.member.model.vo.Member;
 
 @RestController
@@ -48,4 +49,26 @@ public class BoardRestController {
 		return boardService.getMemberData(2);
 	}
 	
+	@GetMapping(value="json/getPostData/{postNo}")
+	public Post getPostData(@PathVariable("postNo") int postNo)throws Exception{
+		
+		System.out.println("getPostData 시작");
+		
+		return boardService.getPostData(postNo);
+	}
+	
+	@GetMapping(value="json/getMemberData2/{memberNo}")
+	public Member getMemberData2(@PathVariable("memberNo") int memberNo) throws Exception{
+		
+		System.out.println("getMemberData2 시작");
+		
+		return boardService.getMemberData(memberNo);
+	}
+	
+	
 }
+
+
+
+
+

@@ -269,6 +269,13 @@
 		
 	</select>
 	
+	<select id="getPostData" parameterType="int" resultMap="PostSelectMap">
+		SELECT
+		*
+		FROM post
+		WHERE post_no = #{value}
+	</select>
+	
 	<select id="getBoardAllData" parameterType="int" resultMap="BoardSelectMap" >
 		
 		SELECT

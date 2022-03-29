@@ -43,6 +43,9 @@ public interface BoardDao {
 	//게시판의 데이터
 	public Board getBoardData(int boardNo) throws Exception;
 	
+	//게시글의 데이터
+	public Post getPostData(int postNo) throws Exception;
+	
 	//게시판의 모든 데이터
 	public Board getBoardAllData(int boardNo) throws Exception;
 	

@@ -86,7 +86,7 @@ public class BoardController {
 		System.out.println("post 데이터 확인 ::: "+post);
 		System.out.println("board 데이터 확인 ::: "+board);
 		
-		return "redirect:/board/listBoard";
+		return "mir9/board/postList?boardNo="+board.getBoardNo();
 	}
 	
 	@PostMapping("updateBoard")
@@ -194,6 +194,51 @@ public class BoardController {
 			postNo = Integer.parseInt(i);
 			post.setPostNo(postNo);
 			boardService.deleteChoicePost(post.getPostNo());
+		}
+		result = 1;
+		
+	}
+	
+	@PostMapping("addPostCopy")
+	public void addPostCopy(@RequestParam(value = "postArr[]") List<String> postArr,
+							@RequestParam("boardNo")int boardNo) throws Exception{
+		
+		System.out.println("addPostCopy 시작");
+		
+		Board board = new Board();
+		
+		
+		int result = 0;
+		int postNo = 0;
+		System.out.println("boardNo 확인 ::: "+boardNo);
+		for(String i : postArr) {
+			postNo = Integer.parseInt(i);
+			Post post = boardService.getPostData(postNo);
+			post.getPostBoard().setBoardNo(boardNo);
+			boardService.addPost(post);
+		}
+		result = 1;
+		
+	}
+	
+	@PostMapping("addPostChange")
+	public void addPostChange(@RequestParam(value = "postArr[]") List<String> postArr,
+							@RequestParam("boardNo")int boardNo) throws Exception{
+		
+		System.out.println("addPostChange 시작");
+		
+		Board board = new Board();
+		
+		
+		int result = 0;
+		int postNo = 0;
+		
+		for(String i : postArr) {
+			postNo = Integer.parseInt(i);
+			Post post = boardService.getPostData(postNo);
+			post.getPostBoard().setBoardNo(boardNo);
+			boardService.addPost(post);
+			boardService.deleteChoicePost(postNo);
 		}
 		result = 1;
 		

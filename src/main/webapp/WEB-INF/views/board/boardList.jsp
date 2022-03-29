@@ -143,6 +143,12 @@
 		$("form[name='updateBoardForm']").attr("method", "POST").attr("action", "/mir9/board/updateBoard").submit();
 	}
 	
+	window.copyURL = function(){
+		var boardNo = $(this).find('input').val();
+		alert(boardNo)
+		prompt("이 게시판의 URL 입니다. Ctrl+C를 눌러 복사하세요", "[include:tpf=mir9/board/boardNo="+boardNo+"]")
+	}
+	
 
 
 </script>
@@ -252,7 +258,8 @@
 							  <td>1</td>
 							  <td>
 		                        <button type="button" onclick="_onclickView('board',1);" class="btn btn-success btn-xs">바로가기</button>
-		                        <button type="button" onclick="onclickCopy(1);" class="btn btn-warning btn-xs">링크복사</button>
+		                        <button type="button" onclick="copyURL();" class="btn btn-warning btn-xs" value="${board.boardNo}">
+		                        	<input type="hidden" value="${board.boardNo}" />링크복사</button>
 		                        <button type="button" class="btn btn-primary btn-xs" name="updateBoard" data-toggle="modal" data-target="#updateBoardModal">
 		                        	<input type="hidden" name="hiddenBoardNo" value="${board.boardNo}" />
 		                        	상세보기

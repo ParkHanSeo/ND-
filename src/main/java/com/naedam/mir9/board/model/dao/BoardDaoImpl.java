@@ -86,6 +86,12 @@ public class BoardDaoImpl implements BoardDao {
 		return sqlSession.selectOne("board.getBoardData", boardNo);
 	}
 	
+	//게시글의 데이터
+	@Override
+	public Post getPostData(int postNo) throws Exception {
+		return sqlSession.selectOne("board.getPostData", postNo);
+	}
+	
 	//게시판의 모든 데이터
 	@Override
 	public Board getBoardAllData(int boardNo) throws Exception {
@@ -132,6 +138,8 @@ public class BoardDaoImpl implements BoardDao {
 	public int getTotalCount2(Map<String, Object> map) {
 		return sqlSession.selectOne("board.getTotalCount2", map);
 	}
+
+	
 
 
 

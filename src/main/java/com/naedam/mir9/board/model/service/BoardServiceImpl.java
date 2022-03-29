@@ -80,6 +80,11 @@ public class BoardServiceImpl implements BoardService {
 	}
 	
 	@Override
+	public Post getPostData(int postNo) throws Exception {
+		return boardDao.getPostData(postNo);
+	}
+	
+	@Override
 	public Board getBoardAllData(int boardNo) throws Exception {
 		return boardDao.getBoardAllData(boardNo);
 	}
@@ -113,6 +118,8 @@ public class BoardServiceImpl implements BoardService {
 	public int updateOption(BoardOption boardOption) throws Exception {
 		return boardDao.updateOption(boardOption);
 	}
+
+	
 
 
 
