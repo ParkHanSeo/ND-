@@ -51,6 +51,7 @@
 		<result property="postViewCount"			column="POST_VIEWCOUNT"			jdbcType="NUMERIC"></result>
 		<result property="postBoard.boardNo"		column="BOARD_NO"				jdbcType="NUMERIC"></result>
 		<result property="postMember.memberNo"		column="MEMBER_NO"				jdbcType="NUMERIC"></result>
+		<result property="postMemberName"			column="MEMBER_NAME"			jdbcType="VARCHAR"></result>
 	</resultMap>
 	
 	<resultMap id="AuthoritySelectMap" type="boardAuthority">
@@ -107,8 +108,7 @@
 	</resultMap>	
 	
 	
-	<insert id="addBoard" parameterType="board" useGeneratedKeys="true" keyProperty="boardNo" keyColumn="BOARD_NO" >
-		
+	<insert id="addBoard" parameterType="board" useGeneratedKeys="true" keyProperty="boardNo" keyColumn="BOARD_NO" >		
 		INSERT
 		INTO BOARD(BOARD_NO,
 				   BOARD_TITLE,
@@ -121,13 +121,13 @@
 			   #{boardType : VARCHAR},
 			   #{boardCategory : VARCHAR},
 			   #{boardEmail : VARCHAR},
-			   #{boardMemberNo.memberNo})
-		
+			   #{boardMemberNo.memberNo})		
 	</insert>
 	
 	<insert id="addPost" parameterType="post">
 		INSERT
 		INTO POST(POST_NO,
+				  POST_ASC,		
 				  BOARD_NO,
 				  POST_TITLE,
 				  POST_CONTENTS,
@@ -135,17 +135,62 @@
 				  POST_THOMBNAIL,
 				  POST_FILE,
 				  POST_VIEWCOUNT,
-				  MEMBER_NO)
+				  POST_NOTICE,
+				  POST_ORIGIN_NO,
+				  POST_ORD,
+				  POST_LAYER,
+				  MEMBER_NO,
+				  MEMBER_NAME)
 		VALUES(post_seq.nextVal,
+			   post_asc_seq.nextVal,
 			   #{postBoard.boardNo},
 			   #{postTitle : VARCHAR},
 			   #{postContents : VARCHAR},
 			   SYSDATE,
+			   #{postThombnail : VARCHAR},			   
 			   #{postFile : VARCHAR},
-			   #{postThombnail : VARCHAR},
-			   #{postViewCount : NUMERIC},
-			   #{postMember.memberNo})		
+			   0,
+			   0,
+			   #{postOriginNo : NUMERIC},
+			   #{postOrd : NUMERIC},
+			   #{postLayer : NUMERIC},
+			   #{postMember.memberNo},
+			   #{postMemberName : VARCHAR})		
 	</insert>
+	
+	<insert id="addAnswerPost" parameterType="post">
+		INSERT
+		INTO POST(POST_NO,
+				  POST_ASC,		
+				  BOARD_NO,
+				  POST_TITLE,
+				  POST_CONTENTS,
+				  POST_DATE,
+				  POST_THOMBNAIL,
+				  POST_FILE,
+				  POST_VIEWCOUNT,
+				  POST_NOTICE,
+				  POST_ORIGIN_NO,
+				  POST_ORD,
+				  POST_LAYER,
+				  MEMBER_NO,
+				  MEMBER_NAME)
+		VALUES(post_seq.nextVal,
+			   #{postAsc : NUMERIC},
+			   #{postBoard.boardNo},
+			   #{postTitle : VARCHAR},
+			   #{postContents : VARCHAR},
+			   SYSDATE,
+			   #{postThombnail : VARCHAR},			   
+			   #{postFile : VARCHAR},
+			   0,
+			   0,
+			   #{postOriginNo : NUMERIC},
+			   #{postOrd : NUMERIC},
+			   #{postLayer : NUMERIC},
+			   #{postMember.memberNo},
+			   #{postMemberName : VARCHAR})		
+	</insert>	
 	
 	<insert id="addAuthority"	parameterType="boardAuthority">
 		INSERT
@@ -171,8 +216,7 @@
 			   #{authorityBoard.boardNo : NUMERIC})	
 	</insert>
 	
-	<insert id="addOption"	parameterType="boardOption">
-	
+	<insert id="addOption"	parameterType="boardOption">	
 		INSERT
 		INTO BOARD_OPTION(OPTION_NO,
 				   OPTION_NOTICE,
@@ -195,78 +239,92 @@
 			   #{optionOrder : VARCHAR},
 			   #{optionAddinfo : VARCHAR},
 			   #{optionPopup : VARCHAR},
-			   #{optionBoard.boardNo : NUMERIC})
-	
+			   #{optionBoard.boardNo : NUMERIC})	
 	</insert>	
 	
-	<insert id="addTranslate"	parameterType="boardTranslate">
-	
+	<insert id="addTranslate"	parameterType="boardTranslate">	
 		INSERT
 		INTO BOARD(TRANSLATE_NO,
 				   TRANSLATE_CATEGORY,
 				   BOARD_NO)
 		VALUES(board_translate_seq.nextVal,
 			   #{translateCategory : VARCHAR},
-			   #{boardNo.boardNo})
-	
+			   #{boardNo.boardNo})	
 	</insert>		
 	
-	<select id="getBoardList" resultType="search" resultMap="BoardSelectMap" >
+	<select id="getBoardList" resultType="hashmap" resultMap="BoardSelectMap" >
 		 SELECT
 				board_no,
 				board_title,
 				board_type,
 				board_category,
-				board_email
+				board_email,
+				(SELECT COUNT(*)
+				 FROM post p
+				 WHERE p.board_no = board_no) count
 		FROM	board
 		ORDER BY board_no ASC 
 	</select>
 	
-	<select id="getTotalCount" parameterType="search" resultType="int">
+	<select id="getTotalCount" parameterType="hashmap" resultType="int">
 	  	SELECT COUNT(*)
 	  	FROM(	SELECT
 						board_no,
 						board_title,
 						board_type,
 						board_category,
-						board_email
+						board_email,
+						(SELECT COUNT(*)
+						 FROM post p
+						 WHERE p.board_no = board_no) count
 				FROM	board
 				ORDER BY board_no ASC) countTable
 	</select>
 	
 	<select id="getTotalCount2" parameterType="hashmap" resultType="int" >
 	  	SELECT COUNT(*)
-	  	FROM(			SELECT
-								p.post_no,
-								p.post_title,
-								p.post_contents,
-								p.post_date,
-								p.post_thombnail,
-								p.post_file,
-								p.board_no,
-								p.member_no
-						FROM	board b, post p
-						WHERE	b.board_no = p.board_no
-						AND		b.board_no = #{board.boardNo}) countTable
-	</select>	
+	  	FROM(					SELECT
+										p.post_no,
+										p.post_asc,
+										p.post_title,
+										p.post_contents,
+										p.post_date,
+										p.post_thombnail,
+										p.post_file,
+										p.post_viewcount,
+										p.post_notice,
+										p.post_origin_no,
+										p.post_ord,
+										p.post_layer,
+										p.board_no,
+										p.member_no,
+										p.member_name
+								FROM	board b, post p, member m
+								WHERE	b.board_no = p.board_no
+								AND		m.member_no = p.member_no
+								AND		b.board_no = #{board.boardNo}
+								<if test="search.searchType == 1 and search.searchKeyword !='' ">
+								AND		(p.post_title like '%'||#{search.searchKeyword}||'%')
+								</if>
+								<if test="search.searchType == 2 and search.searchKeyword !='' ">
+								AND		(p.member_name like '%'||#{search.searchKeyword}||'%')
+								</if>		
+								ORDER BY p.post_asc ASC ,p.post_origin_no ASC, p.post_ord ASC) countTable
+	</select>
 	
-	<select id="getBoardTitle" resultType="board">
-		
+	<select id="getBoardTitle" resultType="board">		
 		SELECT
 				board_no,
 				board_title
 		FROM	board
-		ORDER BY board_no ASC
-	
+		ORDER BY board_no ASC	
 	</select>
 	
-	<select id="getBoardData" parameterType="int" resultMap="BoardSelectMap">
-		
+	<select id="getBoardData" parameterType="int" resultMap="BoardSelectMap">		
 		SELECT
 		*
 		FROM board
-		WHERE board_no = #{boardNo}
-		
+		WHERE board_no = #{boardNo}		
 	</select>
 	
 	<select id="getPostData" parameterType="int" resultMap="PostSelectMap">
@@ -276,8 +334,7 @@
 		WHERE post_no = #{value}
 	</select>
 	
-	<select id="getBoardAllData" parameterType="int" resultMap="BoardSelectMap" >
-		
+	<select id="getBoardAllData" parameterType="int" resultMap="BoardSelectMap" >		
 		SELECT
 				b.board_no,
 				b.member_no,
@@ -315,20 +372,33 @@
 	<select id="getPostList" parameterType="hashmap" resultMap="PostSelectMap" >	
 		SELECT
 				p.post_no,
+				p.post_asc,
 				p.post_title,
 				p.post_contents,
 				p.post_date,
 				p.post_thombnail,
 				p.post_file,
+				p.post_viewcount,
+				p.post_notice,
+				p.post_origin_no,
+				p.post_ord,
+				p.post_layer,
 				p.board_no,
-				p.member_no
-		FROM	board b, post p
+				p.member_no,
+				p.member_name
+		FROM	board b, post p, member m
 		WHERE	b.board_no = p.board_no
+		AND		m.member_no = p.member_no
 		AND		b.board_no = #{board.boardNo}
-		ORDER BY p.post_no ASC	
+		<if test="search.searchType == 1 and search.searchKeyword !='' ">
+		AND		(p.post_title like '%'||#{search.searchKeyword}||'%')
+		</if>
+		<if test="search.searchType == 2 and search.searchKeyword !='' ">
+		AND		(p.member_name like '%'||#{search.searchKeyword}||'%')
+		</if>
+		ORDER BY p.post_asc ASC ,p.post_origin_no ASC, p.post_ord ASC
 	</select>
-		
-	
+			
 	<select id="getMemberData" parameterType="int" resultMap="memberSelectMap">
 		SELECT
 			   member_no,
@@ -368,6 +438,21 @@
 		WHERE board_no = #{boardNo : NUMERIC}
 	</update>
 	
+	<update id="updatePost" parameterType="post">
+		UPDATE post
+		<set>
+			post_title = #{postTitle},
+			post_Contents = #{postContents},
+			post_file = #{postFile},
+			post_thombnail = #{postThombnail},
+			post_notice = #{postNotice},
+			post_origin_no = #{postOriginNo},
+			post_ord = #{postOrd},
+			post_layer = #{postLayer}
+		</set>
+		WHERE post_no = #{postNo}
+	</update>
+	
 	<update id="updateAuthority" parameterType="boardAuthority">
 		UPDATE BOARD_AUTHORITY
 		<set>
@@ -397,6 +482,22 @@
 			OPTION_POPUP = #{optionPopup}			
 		</set>
 		WHERE board_no = #{optionBoard.boardNo : NUMERIC}			
+	</update>
+	
+	<update id="postViewCount" parameterType="post">
+		UPDATE POST
+		<set>
+			POST_VIEWCOUNT = #{postViewCount}
+		</set>	
+		WHERE post_no = #{postNo}
+	</update>
+	
+	<update id="updateThombnail" parameterType="post">
+		UPDATE POST
+		<set>
+			POST_THOMBNAIL = #{postThombnail}
+		</set>
+		WHERE post_no = #{postNo}
 	</update>
 	
 </mapper>

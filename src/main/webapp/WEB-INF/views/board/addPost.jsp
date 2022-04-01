@@ -4,13 +4,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <script>
-	
-	function fncAddPost(){		
-		$("form[name='addPostForm']").attr("method", "POST").attr("action", "/mir9/board/addPost").submit();.getData();				
+	function fncAddPost(){
+		$("form[name='addPostForm']").attr("method", "POST").attr("action", "/mir9/board/addPost").submit();			
 	}
-	
-	
-	
 </script>
 
 <div class="modal fade" id="modalContent" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -26,11 +22,13 @@
 
             <h4><p class="text-light-blue"><i class="fa fa-fw fa-info-circle"></i> 글 등록<span id="board_sub_title">등록</span></p></h4>
             <table class="table table-bordered">
-            <tbody><tr>
+            <tbody>
+            <tr>
                 <td class="menu">작성자</td>
                 <td align="left"><input type="text" name="name" id="name" class="form-control input-sm"></td>
             </tr>
-                        <tr>
+            <c:if test="${board2.option.optionAddinfo eq 'y'}">
+            <tr>
                 <td class="menu">휴대전화</td>
                 <td align="left"><input type="text" name="phone" id="phone" class="form-control input-sm" style="width:50%;"></td>
             </tr>
@@ -38,11 +36,16 @@
                 <td class="menu">이메일</td>
                 <td align="left"><input type="text" name="email" id="email" class="form-control input-sm" style="width:50%;"></td>
             </tr>
+            </c:if>
             <tr>
                 <td class="menu">제목</td>
                 <td align="left">
                 <span style="float:left;width:80%;"><input type="text" name="postTitle" id="postTitle" class="form-control input-sm"></span>
-                <span>&nbsp;&nbsp;<input type="checkbox" name="is_notice" value="y">공지사항</span>
+                <c:if test="${board2.option.optionNotice eq 'y'}">
+	                <span>&nbsp;&nbsp;
+	                	<input type="checkbox" name="titleNotice" value="y">공지사항
+	                </span>
+	            </c:if>
                 </td>
             </tr>
 			<tr>
@@ -57,7 +60,14 @@
 
                  </td>
             </tr>
-            <tr>
+            <c:if test="${board2.option.optionSecret eq 'y'}">
+	            <td class="menu">비밀글</td>
+	            <td align="left">
+	                <span>&nbsp;&nbsp;
+	                	<input type="checkbox" name="is_secret" value="y"></span>
+	                </td>
+	            <tr>
+            </c:if>
                 <td class="menu">썸네일 파일</td>
                 <td align="left">
                 <input type="file" name="ThombnailName" id="ThombnailName" class="form-control input-sm" style="width:80%; display:inline;">
@@ -80,12 +90,18 @@
                     <div id="list_file"><input type="file" name="postName" id="postName" class="form-control input-sm" style="width:100%; display:inline; margin-bottom:10px;"></div>
                 </td>
             </tr>
-            </tbody></table>
-
+            </tbody>
+            </table>
+            <c:if test="${board2.option.optionComment eq 'y'}">
+			<div id="displayMemo" style="">
+            	<h4>
+            		<p class="text-light-blue"><i class="fa fa-fw fa-info-circle"></i> 댓글 관리</p>
+            	</h4>
+            </div>
+            </c:if>
             </div>
             <div class="modal-footer">
             <button type="button" onclick="fncAddPost()" class="btn btn-primary">확인</button>&nbsp;&nbsp;&nbsp;
-            <button type="button" onclick="reply()" id="display_reply" style="" class="btn btn-danger">답변 페이지로 전환</button>
             </div>
             <input type="hidden" value="${board.boardNo}" name="boardNo">
         </form></div>

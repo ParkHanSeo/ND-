@@ -21,13 +21,19 @@ public class Post implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	private int postNo;				//게시글번호
-	private Board postBoard;			//board의 데이터
+	private Board postBoard;		//board의 데이터
 	private String postTitle;		//게시판종류제목
 	private String postContents;	//게시판종류내용
 	private String postDate;		//게시판종류작성일자
 	private String postThombnail;	//게시판종류섬네일
-	private String postFile;
+	private String postFile;		//게시판파일
+	private int postNotice;			//게시판 공지
+	private int postOriginNo;		//계층형 쿼리를 위한 postNo
+	private int postOrd;			//계층형 쿼리 1
+	private int postLayer;			//계층형 쿼리 2
+	private int postAsc;			//순서변경
 	private int postViewCount;		//게시판종류 본횟수
 	private Member postMember;		//회원데이터
+	private String postMemberName;
 	
 }

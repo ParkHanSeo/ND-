@@ -65,6 +65,16 @@ public class BoardRestController {
 		return boardService.getMemberData(memberNo);
 	}
 	
+	@GetMapping(value="json/postViewCount/{postNo}")
+	public void postViewCount(@PathVariable("postNo") int postNo) throws Exception{
+		
+		System.out.println("json/postViewCount 시작");
+		Post post = boardService.getPostData(postNo);
+		System.out.println("viewCOunt 확인 ::: "+post.getPostViewCount()+1);
+		post.setPostViewCount(post.getPostViewCount()+1);
+		boardService.postViewCount(post);
+	}
+	
 	
 }
 

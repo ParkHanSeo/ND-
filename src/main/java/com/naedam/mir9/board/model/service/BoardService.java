@@ -19,6 +19,9 @@ public interface BoardService {
 	//게시글 등록
 	public int addPost(Post post) throws Exception;
 	
+	//게시글 답변 등록
+	public int addAnswerPost(Post post) throws Exception;
+	
 	//게시판 등록의 권한
 	public int addAuthority(BoardAuthority boardAuthority) throws Exception;
 	
@@ -29,7 +32,7 @@ public interface BoardService {
 	public int addTranslate(BoardTranslate boardTranslate) throws Exception;
 	
 	//게시판 목록
-	public Map<String, Object> getBoardList(Search search) throws Exception;
+	public Map<String, Object> getBoardList(Map<String, Object> map) throws Exception;
 	
 	//hearder의 게시판 제목
 	public List<Board> getBoardTitle() throws Exception;
@@ -60,5 +63,12 @@ public interface BoardService {
 	public int updateAuthority(BoardAuthority boardAuthority) throws Exception;
 	public int updateOption(BoardOption boardOption) throws Exception;
 	
+	//게시글 수정
+	public int updatePost(Post post) throws Exception;
 	
+	//썸네일 삭제이지만 업데이트
+	public int updateThombnail(Post post) throws Exception;
+	
+	//게시글 조회수
+	public int postViewCount(Post post) throws Exception;
 }

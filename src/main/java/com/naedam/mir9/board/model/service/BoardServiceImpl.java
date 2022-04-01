@@ -31,6 +31,11 @@ public class BoardServiceImpl implements BoardService {
 	public int addPost(Post post) throws Exception {
 		return boardDao.addPost(post);
 	}
+	
+	@Override
+	public int addAnswerPost(Post post) throws Exception {
+		return boardDao.addAnswerPost(post);
+	}
 
 	@Override
 	public int addAuthority(BoardAuthority boardAuthority) throws Exception {
@@ -48,15 +53,13 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
-	public Map<String, Object> getBoardList(Search search) throws Exception {
+	public Map<String, Object> getBoardList(Map<String, Object> map) throws Exception {
 		
-		List<Board> list = boardDao.getBoardList(search);
-		int totalCount = boardDao.getTotalCount(search);
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("list", list);
-		map.put("totalCount", new Integer(totalCount));
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap.put("list", boardDao.getBoardList(map));
+		resultMap.put("totalCount", boardDao.getTotalCount(map));
 		
-		return map;
+		return resultMap;
 	}
 
 	@Override
@@ -65,7 +68,7 @@ public class BoardServiceImpl implements BoardService {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		resultMap.put("list", boardDao.getPostList(map));
 		resultMap.put("totalCount", boardDao.getTotalCount2(map));
-		
+				
 		return resultMap;
 	}
 	
@@ -118,6 +121,27 @@ public class BoardServiceImpl implements BoardService {
 	public int updateOption(BoardOption boardOption) throws Exception {
 		return boardDao.updateOption(boardOption);
 	}
+	
+	@Override
+	public int updatePost(Post post) throws Exception {
+		return boardDao.updatePost(post);
+	}
+	
+	@Override
+	public int postViewCount(Post post) throws Exception {
+		return boardDao.postViewCount(post);
+	}
+
+	@Override
+	public int updateThombnail(Post post) throws Exception {
+		return boardDao.updateThombnail(post);
+	}
+
+
+
+
+
+	
 
 	
 

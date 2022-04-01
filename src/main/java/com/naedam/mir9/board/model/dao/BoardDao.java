@@ -19,6 +19,9 @@ public interface BoardDao {
 	//게시글 등록
 	public int addPost(Post post) throws Exception;
 	
+	//게시글 답변 등록
+	public int addAnswerPost(Post post) throws Exception;
+	
 	//게시판 등록의 권한
 	public int addAuthority(BoardAuthority boardAuthority) throws Exception;
 	
@@ -29,10 +32,10 @@ public interface BoardDao {
 	public int addTranslate(BoardTranslate boardTranslate) throws Exception;
 	
 	//게시판 목록
-	public List<Board> getBoardList(Search search) throws Exception;
+	public List<Board> getBoardList(Map<String, Object> map) throws Exception;
 	
 	//게시판 목록의 수
-	public int getTotalCount(Search search) throws Exception;
+	public int getTotalCount(Map <String, Object> map) throws Exception;
 	
 	//게시글 목록
 	public List<Post> getPostList(Map<String, Object> map) throws Exception;
@@ -63,6 +66,14 @@ public interface BoardDao {
 	public int updateAuthority(BoardAuthority boardAuthority) throws Exception;
 	public int updateOption(BoardOption boardOption) throws Exception;
 	
+	//게시글 수정
+	public int updatePost(Post post) throws Exception;
+	
+	//썸네일 삭제 = update null
+	public int updateThombnail(Post post) throws Exception;
+	
+	
+	public int postViewCount(Post post) throws Exception;
 	//게시글 수
 	public int getTotalCount2(Map <String, Object> map) throws Exception;
 	

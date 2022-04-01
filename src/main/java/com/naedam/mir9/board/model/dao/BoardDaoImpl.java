@@ -13,7 +13,6 @@ import com.naedam.mir9.board.model.vo.BoardAuthority;
 import com.naedam.mir9.board.model.vo.BoardOption;
 import com.naedam.mir9.board.model.vo.BoardTranslate;
 import com.naedam.mir9.board.model.vo.Post;
-import com.naedam.mir9.board.model.vo.Search;
 import com.naedam.mir9.member.model.vo.Member;
 
 @Repository
@@ -37,6 +36,12 @@ public class BoardDaoImpl implements BoardDao {
 	public int addPost(Post post) throws Exception {
 		return sqlSession.insert("board.addPost", post);
 	}
+	
+	//게시글 답변 등록
+	@Override
+	public int addAnswerPost(Post post) throws Exception {
+		return sqlSession.insert("board.addAnswerPost", post);
+	}
 
 	//게시판 등록의 권한
 	@Override
@@ -58,14 +63,20 @@ public class BoardDaoImpl implements BoardDao {
 	
 	//게시판 목록
 	@Override
-	public List<Board> getBoardList(Search search) throws Exception {
-		return sqlSession.selectList("board.getBoardList", search);
+	public List<Board> getBoardList(Map<String, Object> map) throws Exception {
+		return sqlSession.selectList("board.getBoardList", map);
 	}
 	
 	//게시판의 수
 	@Override
-	public int getTotalCount(Search search) throws Exception {
-		return sqlSession.selectOne("board.getTotalCount", search);
+	public int getTotalCount(Map<String, Object> map) {
+		return sqlSession.selectOne("board.getTotalCount", map);
+	}
+	
+	//게시글의 수
+	@Override
+	public int getTotalCount2(Map<String, Object> map) {
+		return sqlSession.selectOne("board.getTotalCount2", map);
 	}
 	
 	//게시글 목록
@@ -133,11 +144,35 @@ public class BoardDaoImpl implements BoardDao {
 	}
 	//게시판 수정 (게시판, 권한, 옵션) 종료 //////////////////////////////
 	
-	//게시글의 수
+	//게시글 수정
 	@Override
-	public int getTotalCount2(Map<String, Object> map) {
-		return sqlSession.selectOne("board.getTotalCount2", map);
+	public int updatePost(Post post) throws Exception {
+		return sqlSession.update("board.updatePost", post);
 	}
+	
+	//게시글 조회수
+	@Override
+	public int postViewCount(Post post) throws Exception {
+		return sqlSession.update("board.postViewCount" , post);
+	}
+	
+	//썸네일 삭제이지만 업데이트
+	@Override
+	public int updateThombnail(Post post) throws Exception {
+		return sqlSession.update("board.updateThombnail", post);
+	}
+
+
+
+
+
+	
+
+	
+	
+	
+
+	
 
 	
 

@@ -4,7 +4,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <script>
-
+	$(function(){		
+		$("#modalContent2").on("hidden.bs.modal", function(){
+			location.reload();
+		})	
+	})
+	
 	function fncBoardTitle2(){
 		
 			$.ajax({

@@ -58,10 +58,16 @@
 	  		});		
 	  		alert("삭제가 완료되었습니다.")
 	  		location.href = "/mir9/board/postList?boardNo="+boardNo;
-		})		
+		})
+		
+		$("i[name='up']").on("click", function(){
+			var a = $("input:radio[name='order_code']:checked").val();
+			alert(a)
+			var b = $("input:radio[name='order_code']:checked").children().val();
+			alert(b)
+		})
 		
 	})
-	
 	
 	function fncPost(){
 		
@@ -110,11 +116,13 @@
             <div class="box">
                 <div class="box-body">
                     <label style="margin-top:5px;">총 ${resultPage.totalCount} 건</label>
+                    
                     <div class="box-tools pull-right" style="margin-bottom:5px;">
-                    <form name="form_search" method="post" action="?tpf=admin/board/list">
+                    <form name="searchForm" method="post" action="/mir9/board/postList">
+                    	<input type="hidden" name="boardNo" value="${board.boardNo }">
                         <div class="has-feedback">
                         <span>
-                        <input type="text" name="keyword" id="keyword" value="" class="form-control input-sm" placeholder="검색"/>
+                        <input type="text" name="searchKeyword" id="searchKeyword" class="form-control input-sm" placeholder="검색"/>
                         <span class="glyphicon glyphicon-search form-control-feedback"></span>
                         </span>
                         </div>
@@ -122,14 +130,15 @@
 
                     <div class="box-tools pull-right" style="margin-bottom:5px;">
                         <div class="has-feedback">
-                        <select name="field" class="form-control input-sm" style="float:left; width:130px;">
-      <option value="b.title">제목</option>      <option value="b.name">작성자</option>                        </select>
+                        <select name="searchType" class="form-control input-sm" style="float:left; width:130px;">
+      						<option value="1">제목</option>      
+      						<option value="2">작성자</option>                        
+      					</select>
                         </div>
                     </form>
                     </div>
-
                     <table class="table table-bordered table-hover">
-                    <form name="form_list" method="post" action="?tpf=admin/board/process">
+                    <form name="form_list" method="post">
                     <thead>
                     <tr>
                         <td style="width:30px;">
@@ -152,43 +161,77 @@
                         <td style="width:100px;">작성자</td>
                         <td style="width:140px;">등록일</td>
                         <td style="width:80px;">조회수</td>
+                        <c:if test="${board2.option.optionOrder eq 'y'}">
+                        <td style="width:60px;">
+                            <i onclick="fncUp();" name="up" class="fa fa-fw fa-arrow-circle-down cp" style="cursor:pointer;"></i>
+                            <i onclick="changeOrder('up','board_data','?tpf=admin/board/list_order&amp;board_code=1',1,'','',);" class="fa fa-fw fa-arrow-circle-up cp" style="cursor:pointer;"></i>
+                        </td>
+                        </c:if>
                         <td style="width:100px;">다운로드수</td>
                         <td style="width:80px;">명령</td>
                     </tr>
                     </thead>
                     <tbody>
-                    		<c:set var="i" value="0"/>
-	                    	 <c:forEach var="post" items="${list}">
-	                    	   <c:set var="i" value="${ i+1 }" />
-	                    	   <c:if test="${empty post.postNo}">
-	                    	   	<tr>
-	                    	   		<td colspan="10"><br>등록된 자료가 없습니다.<br><br></td>
-	                    	   	</tr>	
-	                    	   </c:if>
-	                    	   <c:if test="${!empty post.postNo}">
-	                    		<tr>
-		                        	<td>
-				                        <div>
-				                        	<input type="checkbox" class="postNo" name="postNo"  value="${post.postNo}" />
-				                        	<script>
-												$(".postNo").click(function() {
-													$("#allCheck").prop("checked", false);
-												});
-											</script>
-										</div>
-		                        	</td>
-	                    			<td>${ i }</td>
-	                    			<td align="left">${post.postTitle}</td>
-	                    			<td>${member.lastName}${member.firstName}</td>
-	                    			<td>${post.postDate}</td>
-	                    			<td>${post.postViewCount}</td>
-	                    			<td>${post.postNo }</td>
-	                    			<td><button type="button" name="getPostBotton" data-toggle="modal" data-target="#modalContent4" class="btn btn-primary btn-xs" value="${post.postNo}">상세보기
-	                    				<input type="hidden" value="${member.memberNo}">
-	                    			</button></td>
-	                    		</tr>
-	                    		</c:if>
-	                    	 </c:forEach>                  	                   
+                    <c:forEach var="post" items="${list}">
+                    <c:if test="${post.postNotice eq '1'}">
+                    <tr>
+                        <td></td>
+                        <td>공지</td>          
+                        <td align="left">${post.postTitle}</td>          
+                        <td>${post.postMemberName}</td>
+                        <td>${post.postDate}</td>
+                        <td>${post.postViewCount}</td>
+                        <td>0</td>
+                        <td>
+                		<button type="button" name="getPostBotton" data-toggle="modal" data-target="#modalContent4" class="btn btn-primary btn-xs" value="${post.postNo}">상세보기
+                			<input type="hidden" value="${post.postMember.memberNo}">
+                		</button>
+                   		</td>
+                    </tr>
+                    </c:if>
+                    </c:forEach>
+                    <c:if test="${empty list}">
+                    <tr>
+                   		<td colspan="10"><br>등록된 자료가 없습니다.<br><br></td>
+                   	</tr>
+                    </c:if>
+                    
+                  	<c:set var="i" value="0"/>
+                   	 <c:forEach var="post" items="${list}">
+                   	 <c:if test="${post.postNotice eq '0'}">
+                   	   <c:set var="i" value="${ i+1 }" />
+                   		<tr>
+                        	<td>
+		                        <div>
+		                        	<input type="checkbox" class="postNo" name="postNo"  value="${post.postNo}" />
+		                        	<script>
+										$(".postNo").click(function() {
+											$("#allCheck").prop("checked", false);
+										});
+									</script>
+								</div>
+                        	</td>
+                   			<td>${ i }</td>
+                   			<td align="left">
+                   				${post.postTitle}
+                   			</td>
+                   			<td>${post.postMemberName}</td>
+                   			<td>${post.postDate}</td>
+                   			<td>${post.postViewCount}</td>
+                   			<c:if test="${board2.option.optionOrder eq 'y'}">
+                   			<td>
+                   				<input type="radio" name="order_code" value="${post.postAsc}" chack="">
+                   			</td>
+                   			</c:if>
+                   			<td>${post.postNo }</td>
+                   			<td>
+                   			<button type="button" name="getPostBotton" data-toggle="modal" data-target="#modalContent4" class="btn btn-primary btn-xs" value="${post.postNo}">상세보기
+                   				<input type="hidden" value="${post.postMember.memberNo}">
+                   			</button>
+                   			</td>
+                   		</tr>
+                      </c:if>
+                   	 </c:forEach>                  	                   
       				</tbody>
       				
       				</form>

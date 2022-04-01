@@ -130,9 +130,11 @@
 					if(JSONData.option.optionPopup == "y"){
 						$("#optionPopup2").prop("checked", true)
 					}
+					
 				}
-			})			
-		})
+			});			
+			
+		}); 
 		// board 상세보기 종료		
 	})
 	
@@ -140,12 +142,12 @@
 		
 		var boardNo2 = $("#boardNo2").val()
 		
+		alert("수정이 완료되었습니다.")
 		$("form[name='updateBoardForm']").attr("method", "POST").attr("action", "/mir9/board/updateBoard").submit();
 	}
 	
 	window.copyURL = function(){
-		var boardNo = $(this).find('input').val();
-		alert(boardNo)
+		var boardNo = $("button[name='updateBoard']").find('input').val();
 		prompt("이 게시판의 URL 입니다. Ctrl+C를 눌러 복사하세요", "[include:tpf=mir9/board/boardNo="+boardNo+"]")
 	}
 	
@@ -259,7 +261,7 @@
 							  <td>
 		                        <button type="button" onclick="_onclickView('board',1);" class="btn btn-success btn-xs">바로가기</button>
 		                        <button type="button" onclick="copyURL();" class="btn btn-warning btn-xs" value="${board.boardNo}">
-		                        	<input type="hidden" value="${board.boardNo}" />링크복사</button>
+		                        	<input type="hidden" name="hiddenBoardNo2" value="${board.boardNo}" />링크복사</button>
 		                        <button type="button" class="btn btn-primary btn-xs" name="updateBoard" data-toggle="modal" data-target="#updateBoardModal">
 		                        	<input type="hidden" name="hiddenBoardNo" value="${board.boardNo}" />
 		                        	상세보기
