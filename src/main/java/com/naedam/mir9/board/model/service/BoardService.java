@@ -5,10 +5,10 @@ import java.util.Map;
 
 import com.naedam.mir9.board.model.vo.Board;
 import com.naedam.mir9.board.model.vo.BoardAuthority;
+import com.naedam.mir9.board.model.vo.BoardFile;
 import com.naedam.mir9.board.model.vo.BoardOption;
 import com.naedam.mir9.board.model.vo.BoardTranslate;
 import com.naedam.mir9.board.model.vo.Post;
-import com.naedam.mir9.board.model.vo.Search;
 import com.naedam.mir9.member.model.vo.Member;
 
 public interface BoardService {
@@ -31,8 +31,14 @@ public interface BoardService {
 	//게시판 등록의 번역
 	public int addTranslate(BoardTranslate boardTranslate) throws Exception;
 	
+	//게시글 파일 등록
+	public int addFile(BoardFile boardFile) throws Exception;
+	
 	//게시판 목록
 	public Map<String, Object> getBoardList(Map<String, Object> map) throws Exception;
+	
+	//게시판 등록 글 수
+	public int getTotalCount3(int boardNo) throws Exception;
 	
 	//hearder의 게시판 제목
 	public List<Board> getBoardTitle() throws Exception;
@@ -66,9 +72,14 @@ public interface BoardService {
 	//게시글 수정
 	public int updatePost(Post post) throws Exception;
 	
+	//계층형 쿼리
+	public int updatePostReply(Post post) throws Exception;
+	
 	//썸네일 삭제이지만 업데이트
 	public int updateThombnail(Post post) throws Exception;
 	
 	//게시글 조회수
 	public int postViewCount(Post post) throws Exception;
+	
+	
 }

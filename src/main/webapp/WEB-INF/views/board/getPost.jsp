@@ -31,6 +31,10 @@
 		$("form[name='getPostForm']").attr("method", "POST").attr("action", "/mir9/board/updatePost").submit();
 	}
 	
+	function fucAddFile2(){
+		$("div[name='listFile2']").append('<input type="file" name="postName" id="getPostFile" class="form-control input-sm" style="width:100%; display:inline; margin-bottom:10px;">');
+	}
+	
 	
 	$(function(){
 		
@@ -63,6 +67,7 @@
 					$("input[name='postOrd']").val(JSONData.postOrd);
 					$("input[name='postLayer']").val(JSONData.postLayer);
 					$("input[name='postAsc']").val(JSONData.postAsc);
+					$("input[name='postOriginNo']").val(JSONData.postOriginNo);
 					CKEDITOR.instances.editor1.setData(JSONData.postContents)
 
 					if(JSONData.postThombnail != null){
@@ -142,6 +147,7 @@
             <input type="hidden" name="postOrd" id="getPostOrd" >
             <input type="hidden" name="postLayer" id="getPostLayer" >
             <input type="hidden" name="postAsc" id="getPostAsc" >
+            <input type="hidden" name="postOriginNo" id="getPostOriginNo" >
             <div class="modal-header">
                 <button type="button" name="x" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                 <h4 class="modal-title" id="myModalLabelPortfolio">게시물 관리</h4>
@@ -208,9 +214,11 @@
                 </p>
 
                 <p style="padding-top:10px; float:left; width:100%;">
-                    <button type="button" class="btn btn-primary btn-xs" onclick="addFile();"><span class="glyphicon glyphicon-plus"></span> 파일추가</button><br>
+                    <button type="button" class="btn btn-primary btn-xs" onclick="fucAddFile2();"><span class="glyphicon glyphicon-plus"></span> 파일추가</button><br>
                 </p>
-                    <div id="list_file"><input type="file" name="postName" id="getPostFile" class="form-control input-sm" style="width:100%; display:inline; margin-bottom:10px;"></div>
+                    <div id="list_file" name="listFile2">
+                    	<input type="file" name="postName" id="getPostFile" class="form-control input-sm" style="width:100%; display:inline; margin-bottom:10px;">
+                    </div>
                 </td>
             </tr>
             </tbody>

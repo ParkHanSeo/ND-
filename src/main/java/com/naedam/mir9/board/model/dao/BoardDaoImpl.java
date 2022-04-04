@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import com.naedam.mir9.board.model.vo.Board;
 import com.naedam.mir9.board.model.vo.BoardAuthority;
+import com.naedam.mir9.board.model.vo.BoardFile;
 import com.naedam.mir9.board.model.vo.BoardOption;
 import com.naedam.mir9.board.model.vo.BoardTranslate;
 import com.naedam.mir9.board.model.vo.Post;
@@ -61,6 +62,12 @@ public class BoardDaoImpl implements BoardDao {
 		return sqlSession.insert("board.addTranslate", boardTranslate);
 	}
 	
+	//게시글 파일 등록
+	@Override
+	public int addFile(BoardFile boardFile) throws Exception {
+		return sqlSession.insert("board.addFile", boardFile);
+	}
+	
 	//게시판 목록
 	@Override
 	public List<Board> getBoardList(Map<String, Object> map) throws Exception {
@@ -77,6 +84,11 @@ public class BoardDaoImpl implements BoardDao {
 	@Override
 	public int getTotalCount2(Map<String, Object> map) {
 		return sqlSession.selectOne("board.getTotalCount2", map);
+	}
+	
+	//게시판 등록 글 수
+	public int getTotalCount3(int boardNo) throws Exception {
+		return sqlSession.selectOne("board.getTotalCount3", boardNo);
 	}
 	
 	//게시글 목록
@@ -161,6 +173,18 @@ public class BoardDaoImpl implements BoardDao {
 	public int updateThombnail(Post post) throws Exception {
 		return sqlSession.update("board.updateThombnail", post);
 	}
+	
+	//계층형 쿼리
+	@Override
+	public int updatePostReply(Post post) throws Exception {
+		return sqlSession.update("board.updatePostReply", post);
+	}
+
+
+
+
+
+
 
 
 

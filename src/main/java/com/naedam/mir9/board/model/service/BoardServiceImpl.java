@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.naedam.mir9.board.model.dao.BoardDao;
 import com.naedam.mir9.board.model.vo.Board;
 import com.naedam.mir9.board.model.vo.BoardAuthority;
+import com.naedam.mir9.board.model.vo.BoardFile;
 import com.naedam.mir9.board.model.vo.BoardOption;
 import com.naedam.mir9.board.model.vo.BoardTranslate;
 import com.naedam.mir9.board.model.vo.Post;
@@ -50,6 +51,11 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	public int addTranslate(BoardTranslate boardTranslate) throws Exception {
 		return boardDao.addTranslate(boardTranslate);
+	}
+	
+	@Override
+	public int addFile(BoardFile boardFile) throws Exception {
+		return boardDao.addFile(boardFile);
 	}
 
 	@Override
@@ -131,11 +137,27 @@ public class BoardServiceImpl implements BoardService {
 	public int postViewCount(Post post) throws Exception {
 		return boardDao.postViewCount(post);
 	}
+	
+	@Override
+	public int updatePostReply(Post post) throws Exception {
+		return boardDao.updatePostReply(post);
+	}
 
 	@Override
 	public int updateThombnail(Post post) throws Exception {
 		return boardDao.updateThombnail(post);
 	}
+
+	@Override
+	public int getTotalCount3(int boardNo) throws Exception {
+		return boardDao.getTotalCount3(boardNo);
+	}
+
+
+
+
+
+	
 
 
 

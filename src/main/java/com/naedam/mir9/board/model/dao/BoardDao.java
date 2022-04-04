@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.naedam.mir9.board.model.vo.Board;
 import com.naedam.mir9.board.model.vo.BoardAuthority;
+import com.naedam.mir9.board.model.vo.BoardFile;
 import com.naedam.mir9.board.model.vo.BoardOption;
 import com.naedam.mir9.board.model.vo.BoardTranslate;
 import com.naedam.mir9.board.model.vo.Post;
@@ -31,6 +32,9 @@ public interface BoardDao {
 	//게시판 등록의 번역
 	public int addTranslate(BoardTranslate boardTranslate) throws Exception;
 	
+	//게시글 파일 등록
+	public int addFile(BoardFile boardFile) throws Exception;
+	
 	//게시판 목록
 	public List<Board> getBoardList(Map<String, Object> map) throws Exception;
 	
@@ -39,6 +43,12 @@ public interface BoardDao {
 	
 	//게시글 목록
 	public List<Post> getPostList(Map<String, Object> map) throws Exception;
+	
+	//게시글 수
+	public int getTotalCount2(Map <String, Object> map) throws Exception;
+	
+	//게시판 등록 글 수
+	public int getTotalCount3(int boardNo) throws Exception;
 	
 	//header의 게시판 제목
 	public List<Board> getBoardTitle();
@@ -72,10 +82,11 @@ public interface BoardDao {
 	//썸네일 삭제 = update null
 	public int updateThombnail(Post post) throws Exception;
 	
+	//계층형 쿼리
+	public int updatePostReply(Post post) throws Exception;
 	
 	public int postViewCount(Post post) throws Exception;
-	//게시글 수
-	public int getTotalCount2(Map <String, Object> map) throws Exception;
+
 	
 	
 }

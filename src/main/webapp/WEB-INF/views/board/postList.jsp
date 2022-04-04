@@ -47,6 +47,11 @@
 				postArr.push($(this).val());
 			});
 			
+			if(!confirm("정말 삭제 하시겠습니까?")){
+				alert("취소 되었습니다.");
+				return;
+				
+			}else{
 	  		$.ajax({
   			 	 url : "/mir9/board/deleteChoicePost",
 	  		  	 type : "POST",
@@ -56,15 +61,23 @@
   		  	 	 }
   		  	 	 
 	  		});		
-	  		alert("삭제가 완료되었습니다.")
+	  		alert("게시글이 삭제 되었습니다.")
 	  		location.href = "/mir9/board/postList?boardNo="+boardNo;
+			}
 		})
 		
 		$("i[name='up']").on("click", function(){
 			var a = $("input:radio[name='order_code']:checked").val();
 			alert(a)
-			var b = $("input:radio[name='order_code']:checked").children().val();
+			var b = $("input:radio[name='order_code']");
 			alert(b)
+			
+			for(var i = 0; i < b.length; i++){
+				alert(b[i])
+			}
+			
+			
+			
 		})
 		
 	})
@@ -119,7 +132,7 @@
                     
                     <div class="box-tools pull-right" style="margin-bottom:5px;">
                     <form name="searchForm" method="post" action="/mir9/board/postList">
-                    	<input type="hidden" name="boardNo" value="${board.boardNo }">
+                    	<input type="hidden" name="boardNo" value="${board.boardNo}">
                         <div class="has-feedback">
                         <span>
                         <input type="text" name="searchKeyword" id="searchKeyword" class="form-control input-sm" placeholder="검색"/>
@@ -177,7 +190,9 @@
                     <tr>
                         <td></td>
                         <td>공지</td>          
-                        <td align="left">${post.postTitle}</td>          
+                        <td align="left">
+                        	${post.postTitle}
+                        </td>          
                         <td>${post.postMemberName}</td>
                         <td>${post.postDate}</td>
                         <td>${post.postViewCount}</td>
@@ -220,7 +235,7 @@
                    			<td>${post.postViewCount}</td>
                    			<c:if test="${board2.option.optionOrder eq 'y'}">
                    			<td>
-                   				<input type="radio" name="order_code" value="${post.postAsc}" chack="">
+                   				<input type="radio" name="order_code" value="${post.postOriginNo}" chack="">
                    			</td>
                    			</c:if>
                    			<td>${post.postNo }</td>

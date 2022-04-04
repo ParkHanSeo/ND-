@@ -47,7 +47,6 @@
 		<result property="postContents"				column="POST_CONTENTS"			jdbcType="VARCHAR"></result>
 		<result property="postDate"					column="POST_DATE"				jdbcType="VARCHAR"></result>
 		<result property="postThombnail"			column="POST_THOMBNAIL"			jdbcType="VARCHAR"></result>
-		<result property="postFile"					column="POST_FILE"				jdbcType="VARCHAR"></result>
 		<result property="postViewCount"			column="POST_VIEWCOUNT"			jdbcType="NUMERIC"></result>
 		<result property="postBoard.boardNo"		column="BOARD_NO"				jdbcType="NUMERIC"></result>
 		<result property="postMember.memberNo"		column="MEMBER_NO"				jdbcType="NUMERIC"></result>
@@ -64,20 +63,20 @@
 		<result property="authorityAnswer"			column="AUTHORITY_ANSWER"		jdbcType="VARCHAR"></result>
 		<result property="authorityNotice"			column="AUTHORITY_NOTICE"		jdbcType="VARCHAR"></result>
 		<result property="authorityComment"			column="AUTHORITY_COMMENT"		jdbcType="VARCHAR"></result>
-		<result property="authorityBoard.boardNo"			column="BOARD_NO"				jdbcType="NUMERIC"></result>
+		<result property="authorityBoard.boardNo"	column="BOARD_NO"				jdbcType="NUMERIC"></result>
 	</resultMap>		
 	
 	<resultMap id="optionSelectMap" type="boardOption">
-		<result property="optionNo"				column="OPTION_NO"				jdbcType="NUMERIC"></result>
-		<result property="optionNotice"			column="OPTION_NOTICE"			jdbcType="VARCHAR"></result>
-		<result property="optionComment"		column="OPTION_COMMENT"			jdbcType="VARCHAR"></result>
-		<result property="optionSecret"			column="OPTION_SECRET"			jdbcType="VARCHAR"></result>
-		<result property="optionAnswer"			column="OPTION_ANSWER"			jdbcType="VARCHAR"></result>
-		<result property="optionCaptcha"		column="OPTION_CAPTCHA"			jdbcType="VARCHAR"></result>
-		<result property="optionMass"			column="OPTION_MASS"			jdbcType="VARCHAR"></result>
-		<result property="optionOrder"			column="OPTION_ORDER"			jdbcType="VARCHAR"></result>
-		<result property="optionAddinfo"		column="OPTION_ADDINFO"			jdbcType="VARCHAR"></result>
-		<result property="optionPopup"			column="OPTION_POPUP"			jdbcType="VARCHAR"></result>
+		<result property="optionNo"					column="OPTION_NO"				jdbcType="NUMERIC"></result>
+		<result property="optionNotice"				column="OPTION_NOTICE"			jdbcType="VARCHAR"></result>
+		<result property="optionComment"			column="OPTION_COMMENT"			jdbcType="VARCHAR"></result>
+		<result property="optionSecret"				column="OPTION_SECRET"			jdbcType="VARCHAR"></result>
+		<result property="optionAnswer"				column="OPTION_ANSWER"			jdbcType="VARCHAR"></result>
+		<result property="optionCaptcha"			column="OPTION_CAPTCHA"			jdbcType="VARCHAR"></result>
+		<result property="optionMass"				column="OPTION_MASS"			jdbcType="VARCHAR"></result>
+		<result property="optionOrder"				column="OPTION_ORDER"			jdbcType="VARCHAR"></result>
+		<result property="optionAddinfo"			column="OPTION_ADDINFO"			jdbcType="VARCHAR"></result>
+		<result property="optionPopup"				column="OPTION_POPUP"			jdbcType="VARCHAR"></result>
 		<result property="optionBoard.boardNo"		column="BOARD_NO"				jdbcType="NUMERIC"></result>
 	</resultMap>	
 	
@@ -90,8 +89,7 @@
 	<resultMap id="fileSelectMap" type="boardFile">
 		<result property="fileNo"					column="FILE_NO"				jdbcType="NUMERIC"></result>
 		<result property="fileName"					column="FILE_NAME"				jdbcType="VARCHAR"></result>
-		<result property="thumbnail"				column="THUMBNAIL"				jdbcType="VARCHAR"></result>
-		<result property="postNo.postNo"			column="POST_NO"				jdbcType="NUMERIC"></result>
+		<result property="filePost.postNo"			column="POST_NO"				jdbcType="NUMERIC"></result>
 	</resultMap>
 	
 	<resultMap id="memberSelectMap" type="member">
@@ -124,7 +122,7 @@
 			   #{boardMemberNo.memberNo})		
 	</insert>
 	
-	<insert id="addPost" parameterType="post">
+	<insert id="addPost" parameterType="post" useGeneratedKeys="true" keyProperty="postNo" keyColumn="POST_NO">
 		INSERT
 		INTO POST(POST_NO,
 				  POST_ASC,		
@@ -133,7 +131,6 @@
 				  POST_CONTENTS,
 				  POST_DATE,
 				  POST_THOMBNAIL,
-				  POST_FILE,
 				  POST_VIEWCOUNT,
 				  POST_NOTICE,
 				  POST_ORIGIN_NO,
@@ -142,16 +139,15 @@
 				  MEMBER_NO,
 				  MEMBER_NAME)
 		VALUES(post_seq.nextVal,
-			   post_asc_seq.nextVal,
+			   0,
 			   #{postBoard.boardNo},
 			   #{postTitle : VARCHAR},
 			   #{postContents : VARCHAR},
 			   SYSDATE,
 			   #{postThombnail : VARCHAR},			   
-			   #{postFile : VARCHAR},
 			   0,
 			   0,
-			   #{postOriginNo : NUMERIC},
+			   post_seq.nextVal,
 			   #{postOrd : NUMERIC},
 			   #{postLayer : NUMERIC},
 			   #{postMember.memberNo},
@@ -167,7 +163,6 @@
 				  POST_CONTENTS,
 				  POST_DATE,
 				  POST_THOMBNAIL,
-				  POST_FILE,
 				  POST_VIEWCOUNT,
 				  POST_NOTICE,
 				  POST_ORIGIN_NO,
@@ -182,12 +177,11 @@
 			   #{postContents : VARCHAR},
 			   SYSDATE,
 			   #{postThombnail : VARCHAR},			   
-			   #{postFile : VARCHAR},
 			   0,
 			   0,
 			   #{postOriginNo : NUMERIC},
-			   #{postOrd : NUMERIC},
-			   #{postLayer : NUMERIC},
+			   #{postOrd : NUMERIC}+1,
+			   #{postLayer : NUMERIC}+1,
 			   #{postMember.memberNo},
 			   #{postMemberName : VARCHAR})		
 	</insert>	
@@ -252,6 +246,16 @@
 			   #{boardNo.boardNo})	
 	</insert>		
 	
+	<insert id="addFile" parameterType="boardFile">
+		INSERT
+		INTO BOARD_FILE(FILE_NO,
+						POST_NO,
+						FILE_NAME)
+		VALUES(board_file_seq.nextVal,
+			   #{filePost.postNo},
+			   #{fileName : VARCHAR})
+	</insert>
+	
 	<select id="getBoardList" resultType="hashmap" resultMap="BoardSelectMap" >
 		 SELECT
 				board_no,
@@ -290,7 +294,6 @@
 										p.post_contents,
 										p.post_date,
 										p.post_thombnail,
-										p.post_file,
 										p.post_viewcount,
 										p.post_notice,
 										p.post_origin_no,
@@ -309,8 +312,33 @@
 								<if test="search.searchType == 2 and search.searchKeyword !='' ">
 								AND		(p.member_name like '%'||#{search.searchKeyword}||'%')
 								</if>		
-								ORDER BY p.post_asc ASC ,p.post_origin_no ASC, p.post_ord ASC) countTable
+								ORDER BY p.post_origin_no ASC, p.post_ord ASC, p.post_layer ASC) countTable
+	</select>	
+	
+	<select id="getTotalCount3" parameterType="int" resultType="int" >
+	  	SELECT COUNT(*)
+	  	FROM(					SELECT
+										p.post_no,
+										p.post_asc,
+										p.post_title,
+										p.post_contents,
+										p.post_date,
+										p.post_thombnail,
+										p.post_viewcount,
+										p.post_notice,
+										p.post_origin_no,
+										p.post_ord,
+										p.post_layer,
+										p.board_no,
+										p.member_no,
+										p.member_name
+								FROM	board b, post p, member m
+								WHERE	b.board_no = p.board_no
+								AND		m.member_no = p.member_no
+								AND		b.board_no = #{boardNo}		
+								ORDER BY p.post_origin_no ASC, p.post_ord ASC, p.post_layer ASC) countTable
 	</select>
+	
 	
 	<select id="getBoardTitle" resultType="board">		
 		SELECT
@@ -377,7 +405,6 @@
 				p.post_contents,
 				p.post_date,
 				p.post_thombnail,
-				p.post_file,
 				p.post_viewcount,
 				p.post_notice,
 				p.post_origin_no,
@@ -396,7 +423,7 @@
 		<if test="search.searchType == 2 and search.searchKeyword !='' ">
 		AND		(p.member_name like '%'||#{search.searchKeyword}||'%')
 		</if>
-		ORDER BY p.post_asc ASC ,p.post_origin_no ASC, p.post_ord ASC
+		ORDER BY p.post_origin_no ASC, p.post_ord ASC, p.post_layer ASC
 	</select>
 			
 	<select id="getMemberData" parameterType="int" resultMap="memberSelectMap">
@@ -443,7 +470,6 @@
 		<set>
 			post_title = #{postTitle},
 			post_Contents = #{postContents},
-			post_file = #{postFile},
 			post_thombnail = #{postThombnail},
 			post_notice = #{postNotice},
 			post_origin_no = #{postOriginNo},
@@ -451,6 +477,14 @@
 			post_layer = #{postLayer}
 		</set>
 		WHERE post_no = #{postNo}
+	</update>
+	
+	<update id="updatePostReply" parameterType="post">
+		UPDATE post
+		<set>
+			post_asc = #{postAsc}+1
+		</set>
+		WHERE post_no = #{postOriginNo}
 	</update>
 	
 	<update id="updateAuthority" parameterType="boardAuthority">

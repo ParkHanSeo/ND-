@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +32,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.naedam.mir9.board.model.service.BoardService;
 import com.naedam.mir9.board.model.vo.Board;
 import com.naedam.mir9.board.model.vo.BoardAuthority;
+import com.naedam.mir9.board.model.vo.BoardFile;
 import com.naedam.mir9.board.model.vo.BoardOption;
 import com.naedam.mir9.board.model.vo.Page;
 import com.naedam.mir9.board.model.vo.Post;
@@ -66,29 +68,36 @@ public class BoardController {
 	@PostMapping("addPost")
 	public String addPost(@ModelAttribute("post") Post post,
 						  @ModelAttribute("board") Board board,
-					      @RequestParam("postName") MultipartFile postName,
+					      @RequestParam(value="postName") MultipartFile[] postName,
 					      @RequestParam("ThombnailName") MultipartFile ThombnailName) throws Exception {
 		
 		System.out.println("addPost 시작");
+		
+		BoardFile boardFile = new BoardFile();
 		
 		//1번 회원이 로그인을 했다고 가정
 		Member member2 = boardService.getMemberData(1);
 		post.setPostMember(member2);
 		post.setPostMemberName(member2.getLastName()+member2.getFirstName());
-		System.out.println("memeberData ==== "+member2);
+		System.out.println("이거 확인 ::: === "+ postName.length);
 		
 		//파일 업로드
 		String filePath = "C:\\workspace\\NdMir9\\src\\main\\webapp\\resources\\imgs\\imageBoard\\board";
 		File file = new File(filePath+ThombnailName.getOriginalFilename());
-		File file2 = new File(filePath+postName.getOriginalFilename());
 		post.setPostBoard(board);
-		post.setPostFile(postName.getOriginalFilename());
 		post.setPostThombnail(ThombnailName.getOriginalFilename());
-		postName.transferTo(file2);
 		ThombnailName.transferTo(file);
-		//파일 업로드 끝	
-		
 		boardService.addPost(post);
+		
+		for(int i = 0; i < postName.length; i++) {
+			File file2 = new File(filePath+postName[i].getOriginalFilename());
+			boardFile.setFilePost(post);;
+			boardFile.setFileName(postName[i].getOriginalFilename());
+			postName[i].transferTo(file2);
+			boardService.addFile(boardFile);
+		}
+		
+		
 		
 		System.out.println("post 데이터 확인 ::: "+post);
 		System.out.println("board 데이터 확인 ::: "+board);
@@ -115,15 +124,21 @@ public class BoardController {
 		File file = new File(filePath+ThombnailName.getOriginalFilename());
 		File file2 = new File(filePath+postName.getOriginalFilename());
 		post.setPostBoard(board);
-		post.setPostFile(postName.getOriginalFilename());
+		//post.setPostFile(postName.getOriginalFilename());
 		post.setPostThombnail(ThombnailName.getOriginalFilename());
 		postName.transferTo(file2);
 		ThombnailName.transferTo(file);
 		//파일 업로드 끝	
-		post.setPostOriginNo(post.getPostNo());
-		post.setPostOrd(post.getPostOrd()+1);
-		post.setPostLayer(post.getPostLayer()+1);
-		post.setPostAsc(post.getPostAsc());
+		
+		
+		Post post2 = boardService.getPostData(post.getPostNo());
+		System.out.println("post2의 데이터 === "+post2);
+		post.setPostOriginNo(post.getPostOriginNo()); // 이건 해결
+		post.setPostOrd(post2.getPostAsc());
+		post.setPostLayer(post2.getPostLayer());
+		post.setPostAsc(post2.getPostAsc());
+		
+		boardService.updatePostReply(post2);
 		
 		boardService.addAnswerPost(post);
 		
@@ -169,7 +184,7 @@ public class BoardController {
 		File file = new File(filePath+ThombnailName.getOriginalFilename());
 		File file2 = new File(filePath+postName.getOriginalFilename());
 		post.setPostBoard(board);
-		post.setPostFile(postName.getOriginalFilename());
+		//post.setPostFile(postName.getOriginalFilename());
 		post.setPostThombnail(ThombnailName.getOriginalFilename());
 		postName.transferTo(file2);
 		ThombnailName.transferTo(file);
@@ -190,14 +205,27 @@ public class BoardController {
 		if(search.getCurrentPage() ==0 ){
 			search.setCurrentPage(1);
 		}
+		List postCount = new ArrayList();
+		List<Board> board2 = boardService.getBoardTitle();
+		
+		for(int i = 0 ; i < board2.size(); i++) {
+			int a = boardService.getTotalCount3(board2.get(i).getBoardNo());
+			postCount.add(a);
+		}
+		System.out.println("count 확인 ::: " + postCount);
+		
+		
+		
 		
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("search", search);
 		
 		Map<String, Object> resultMap = boardService.getBoardList(map);
-		Page resultPage = new Page( search.getCurrentPage(), ((Integer)resultMap.get("totalCount")).intValue(), pageUnit, pageSize);
 		
+		Page resultPage = new Page( search.getCurrentPage(), ((Integer)resultMap.get("totalCount")).intValue(), pageUnit, pageSize);
+		System.out.println("resultMap 확인 === "+resultMap);
 		model.addAttribute("list", resultMap.get("list"));
+		model.addAttribute("postCount", postCount);
 		model.addAttribute("resultPage", resultPage);
 		model.addAttribute("search", search);
 		

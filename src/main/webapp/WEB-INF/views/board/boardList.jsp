@@ -48,8 +48,11 @@
 				boardArr.push($(this).val());
  			});
 			
-			alert(boardArr)
-			
+			if(!confirm("정말 삭제 하시겠습니까?")){
+				alert("취소 되었습니다.");
+				return;
+				
+			}else{
 	  		$.ajax({
   			 	 url : "/mir9/board/deleteChoiceBoard",
 	  		  	 type : "POST",
@@ -57,15 +60,13 @@
   		  	 		boardArr : boardArr 
   		  	 	 },
     		 	 success : function(result){
-    		 		if(result == 1){
-    		 		 	location.href = "/mir9/board/boardList";
-   		   	 	 	} else {
-   		   	 	 		alert("삭제 실패")
-   		   	 	 	}
+    		 		
   		  	 	 }
   		  	 	 
 	  		});		
-	  		alert("삭제가 완료되었습니다.")
+				alert("게시판이 삭제 되었습니다.")
+				location.href = "/mir9/board/listBoard";
+			}
 	  		//location.href = "mir9/board/listBoard";
 		})	
 		//board 선택삭제 종료
@@ -215,7 +216,7 @@
                     </thead>
                     <tbody id="boardTable" >
                     	<c:set var="i" value="0"/>
-                    	 <c:forEach var="board" items="${list}">
+                    	 <c:forEach var="board" items="${list}" varStatus="status" >
                     	   <c:set var="i" value="${ i+1 }" />
 							<tr>
 		                        <td>
@@ -257,7 +258,7 @@
 							  		브로슈어
 							  	</c:if>	
 							  </td>
-							  <td>1</td>
+							  <td>${postCount[i-1]}</td>
 							  <td>
 		                        <button type="button" onclick="_onclickView('board',1);" class="btn btn-success btn-xs">바로가기</button>
 		                        <button type="button" onclick="copyURL();" class="btn btn-warning btn-xs" value="${board.boardNo}">

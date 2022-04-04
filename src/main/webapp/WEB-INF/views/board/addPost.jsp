@@ -5,8 +5,22 @@
 
 <script>
 	function fncAddPost(){
+		
+		var postFile = $("input[id='postName']").length;
+		var postName = new Array(postFile);
+		
+		for(var i = 0; i < postFile; i++){
+			postName[i] = $("input[id='postName']")[i].value;
+			alert(postName[i])
+		}
+		alert("게시글이 등록 되었습니다.")
 		$("form[name='addPostForm']").attr("method", "POST").attr("action", "/mir9/board/addPost").submit();			
 	}
+	
+	function fucAddFile(){
+		$("div[name='listFile']").append('<input type="file" name="postName" id="postName" class="form-control input-sm" style="width:100%; display:inline; margin-bottom:10px;">');
+	}
+	
 </script>
 
 <div class="modal fade" id="modalContent" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -20,7 +34,7 @@
             </div>
             <div class="modal-body">
 
-            <h4><p class="text-light-blue"><i class="fa fa-fw fa-info-circle"></i> 글 등록<span id="board_sub_title">등록</span></p></h4>
+            <h4><p class="text-light-blue"><i class="fa fa-fw fa-info-circle"></i> 글 <span id="board_sub_title">등록</span></p></h4>
             <table class="table table-bordered">
             <tbody>
             <tr>
@@ -85,9 +99,11 @@
                 </p>
 
                 <p style="padding-top:10px; float:left; width:100%;">
-                    <button type="button" class="btn btn-primary btn-xs" onclick="addFile();"><span class="glyphicon glyphicon-plus"></span> 파일추가</button><br>
+                    <button type="button" class="btn btn-primary btn-xs" onclick="fucAddFile();"><span class="glyphicon glyphicon-plus"></span> 파일추가</button><br>
                 </p>
-                    <div id="list_file"><input type="file" name="postName" id="postName" class="form-control input-sm" style="width:100%; display:inline; margin-bottom:10px;"></div>
+                    <div id="list_file" name="listFile">
+                    	<input type="file" name="postName" id="postName" class="form-control input-sm" style="width:100%; display:inline; margin-bottom:10px;" >
+                    </div>
                 </td>
             </tr>
             </tbody>
