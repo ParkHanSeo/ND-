@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.naedam.mir9.board.model.dao.BoardDao;
 import com.naedam.mir9.board.model.vo.Board;
 import com.naedam.mir9.board.model.vo.BoardAuthority;
+import com.naedam.mir9.board.model.vo.BoardComment;
 import com.naedam.mir9.board.model.vo.BoardFile;
 import com.naedam.mir9.board.model.vo.BoardOption;
 import com.naedam.mir9.board.model.vo.BoardTranslate;
@@ -47,6 +48,11 @@ public class BoardServiceImpl implements BoardService {
 	public int addOption(BoardOption boardOption) throws Exception {
 		return boardDao.addOption(boardOption);
 	}
+	
+	@Override
+	public int addComment(BoardComment boardComment) throws Exception {
+		return boardDao.addComment(boardComment);
+	}
 
 	@Override
 	public int addTranslate(BoardTranslate boardTranslate) throws Exception {
@@ -79,6 +85,11 @@ public class BoardServiceImpl implements BoardService {
 	}
 	
 	@Override
+	public List<BoardComment> getCommentList(int postNo) throws Exception {
+		return boardDao.getCommentList(postNo);
+	}
+	
+	@Override
 	public List<Board> getBoardTitle() throws Exception {
 		return boardDao.getBoardTitle();
 	}
@@ -102,6 +113,17 @@ public class BoardServiceImpl implements BoardService {
 	public Member getMemberData(int memberNo) throws Exception {
 		return boardDao.getMemberData(memberNo);
 	}
+	
+	@Override
+	public List<BoardFile> getPostFile(int postNo) throws Exception {
+		return boardDao.getPostFile(postNo);
+	}
+	
+	@Override
+	public BoardFile getFileData(int fileNo) throws Exception {
+		return boardDao.getFileData(fileNo);
+	}
+
 
 	@Override
 	public void deleteChoiceBoard(int boardNo) throws Exception {
@@ -111,6 +133,16 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	public void deleteChoicePost(int postNo) throws Exception {
 		boardDao.deleteChoicePost(postNo);
+	}
+	
+	@Override
+	public void deleteFile(int fileNo) throws Exception {
+		boardDao.deleteFile(fileNo);
+	}
+	
+	@Override
+	public void deleteComment(int commentNo) throws Exception {
+		boardDao.deleteComment(commentNo);
 	}
 
 	@Override
@@ -152,6 +184,19 @@ public class BoardServiceImpl implements BoardService {
 	public int getTotalCount3(int boardNo) throws Exception {
 		return boardDao.getTotalCount3(boardNo);
 	}
+
+
+
+	
+
+	
+
+	
+	
+
+	
+
+	
 
 
 

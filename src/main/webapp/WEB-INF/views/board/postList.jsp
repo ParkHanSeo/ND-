@@ -98,6 +98,7 @@
 				$("#name").val(JSONData.lastName+JSONData.firstName);
 				$("#phone").val(JSONData.phone);
 				$("#email").val(JSONData.email);
+				$("#name").val(JSONData.lastName+JSONData.firstName);
 				
 			}
 		})
@@ -252,7 +253,6 @@
       				</form>
                     </table>
                     <br>
-
                     <button type="button" id="deleteChoicePost" class="btn btn-danger btn-sm"><i class="fa fa-minus-square"></i> 선택삭제</button>
                     <button type="button" onclick="fncPost()" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalContent"><i class="fa fa-plus-square"></i> 글 등록</button>
                     <button type="button" onclick="fncBoardTitle2()" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#modalContent2"><i class="fa fa-random"></i> 게시물 복사</button>
@@ -275,8 +275,10 @@
 </div>
 <jsp:include page="/WEB-INF/views/board/addPost.jsp"/>
 <jsp:include page="/WEB-INF/views/board/getPost.jsp"/>
+<jsp:include page="/WEB-INF/views/board/addComment.jsp"/>
 <jsp:include page="/WEB-INF/views/board/boardCopy.jsp"/>
 <jsp:include page="/WEB-INF/views/board/boardChange.jsp"/>
+
 </div><!-- /.content-wrapper -->
 
 <jsp:include page="/WEB-INF/views/common/footer.jsp"></jsp:include>

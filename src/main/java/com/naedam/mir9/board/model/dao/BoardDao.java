@@ -5,11 +5,11 @@ import java.util.Map;
 
 import com.naedam.mir9.board.model.vo.Board;
 import com.naedam.mir9.board.model.vo.BoardAuthority;
+import com.naedam.mir9.board.model.vo.BoardComment;
 import com.naedam.mir9.board.model.vo.BoardFile;
 import com.naedam.mir9.board.model.vo.BoardOption;
 import com.naedam.mir9.board.model.vo.BoardTranslate;
 import com.naedam.mir9.board.model.vo.Post;
-import com.naedam.mir9.board.model.vo.Search;
 import com.naedam.mir9.member.model.vo.Member;
 
 public interface BoardDao {
@@ -35,6 +35,9 @@ public interface BoardDao {
 	//게시글 파일 등록
 	public int addFile(BoardFile boardFile) throws Exception;
 	
+	//댓글 등록
+	public int addComment(BoardComment boardComment) throws Exception;
+	
 	//게시판 목록
 	public List<Board> getBoardList(Map<String, Object> map) throws Exception;
 	
@@ -43,6 +46,15 @@ public interface BoardDao {
 	
 	//게시글 목록
 	public List<Post> getPostList(Map<String, Object> map) throws Exception;
+	
+	//게시글의 파일 데이터
+	public List<BoardFile> getPostFile(int postNo) throws Exception;
+	
+	//댓글 목록
+	public List<BoardComment> getCommentList(int postNo) throws Exception;
+	
+	//파일 데이터
+	public BoardFile getFileData(int fileNo) throws Exception;
 	
 	//게시글 수
 	public int getTotalCount2(Map <String, Object> map) throws Exception;
@@ -69,7 +81,13 @@ public interface BoardDao {
 	public void deleteChoiceBoard(int boardNo) throws Exception;
 	
 	//게시글 선택 삭제
-	public void deleteChoicePost(int postNo) throws Exception;	
+	public void deleteChoicePost(int postNo) throws Exception;
+	
+	//파일 삭제
+	public void deleteFile(int fileNo) throws Exception;
+	
+	//댓글 삭제
+	public void deleteComment(int commentNo) throws Exception;
 	
 	//게시판 수정 (게시판, 권한, 옵션)
 	public int updateBoard(Board board) throws Exception;

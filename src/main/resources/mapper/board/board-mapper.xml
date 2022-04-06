@@ -91,6 +91,15 @@
 		<result property="fileName"					column="FILE_NAME"				jdbcType="VARCHAR"></result>
 		<result property="filePost.postNo"			column="POST_NO"				jdbcType="NUMERIC"></result>
 	</resultMap>
+			
+	<resultMap id="commentSelectMap" type="boardComment">
+		<result property="commentNo"					column="COMMENT_NO"				jdbcType="NUMERIC"></result>
+		<result property="commentContents"				column="COMMENT_CONTENTS"		jdbcType="VARCHAR"></result>
+		<result property="commentData"					column="COMMENT_DATE"			jdbcType="VARCHAR"></result>
+		<result property="commentWriter"				column="COMMENT_WRITER"			jdbcType="VARCHAR"></result>
+		<result property="commentMember.memberNo"		column="MEMBER_NO"				jdbcType="NUMERIC"></result>
+		<result property="commentPost.postNo"			column="POST_NO"				jdbcType="NUMERIC"></result>
+	</resultMap>
 	
 	<resultMap id="memberSelectMap" type="member">
 		<result property="memberNo"					column="MEMBER_NO"				jdbcType="NUMERIC"></result>
@@ -254,6 +263,22 @@
 		VALUES(board_file_seq.nextVal,
 			   #{filePost.postNo},
 			   #{fileName : VARCHAR})
+	</insert>
+	
+	<insert id="addComment" parameterType="boardComment">
+		INSERT
+		INTO BOARD_COMMENT(COMMENT_NO,
+						   COMMENT_CONTENTS,
+						   COMMENT_DATE,
+						   COMMENT_WRITER,
+						   MEMBER_NO,
+						   POST_NO)
+		VALUES(board_comment_seq.nextVal,
+			   #{commentContents},
+			   SYSDATE,
+			   #{commentWriter},
+			   #{commentMemberNo},
+			   #{commentPostNo})
 	</insert>
 	
 	<select id="getBoardList" resultType="hashmap" resultMap="BoardSelectMap" >
@@ -425,6 +450,20 @@
 		</if>
 		ORDER BY p.post_origin_no ASC, p.post_ord ASC, p.post_layer ASC
 	</select>
+	
+	<select id="getCommentList" parameterType="int" resultMap="commentSelectMap">
+		SELECT
+				c.comment_no,
+				c.comment_contents,
+				c.comment_date,
+				c.comment_writer,
+				c.member_no,
+				c.post_no
+		FROM	board_comment c, post p
+		WHERE	c.post_no = p.post_no
+		AND		c.post_no = #{value}
+		ORDER BY c.comment_no ASC
+	</select>
 			
 	<select id="getMemberData" parameterType="int" resultMap="memberSelectMap">
 		SELECT
@@ -442,6 +481,24 @@
 		WHERE  member_no = #{memberNo}
 	</select>
 	
+	<select id="getPostFile" parameterType="int" resultMap="fileSelectMap">
+		SELECT
+			   file_no,
+			   post_no,
+			   file_name
+		FROM   board_file
+		WHERE  post_no = #{boardNo}
+	</select>
+	
+	<select id="getFileData" parameterType="int" resultMap="fileSelectMap">
+		SELECT
+			   file_no,
+			   post_no,
+			   file_name
+		FROM   board_file
+		WHERE  file_no = #{file_no}
+	</select>
+	
 	<delete id="deleteChoiceBoard" parameterType="int">
 		DELETE
 		FROM board
@@ -452,7 +509,19 @@
 		DELETE
 		FROM post
 		WHERE post_no = #{value}
-	</delete>	
+	</delete>
+	
+	<delete id="deleteFile" parameterType="int">
+		DELETE
+		FROM board_file
+		WHERE file_no = #{value}
+	</delete>
+	
+	<delete id="deleteComment" parameterType="int">
+		DELETE
+		FROM board_comment
+		WHERE comment_no = #{value}
+	</delete>
 	
 	<update id="updateBoard" parameterType="board">
 		UPDATE board

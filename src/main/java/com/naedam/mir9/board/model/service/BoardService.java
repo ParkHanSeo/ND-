@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.naedam.mir9.board.model.vo.Board;
 import com.naedam.mir9.board.model.vo.BoardAuthority;
+import com.naedam.mir9.board.model.vo.BoardComment;
 import com.naedam.mir9.board.model.vo.BoardFile;
 import com.naedam.mir9.board.model.vo.BoardOption;
 import com.naedam.mir9.board.model.vo.BoardTranslate;
@@ -34,8 +35,14 @@ public interface BoardService {
 	//게시글 파일 등록
 	public int addFile(BoardFile boardFile) throws Exception;
 	
+	//댓글 등록
+	public int addComment(BoardComment boardComment) throws Exception;
+	
 	//게시판 목록
 	public Map<String, Object> getBoardList(Map<String, Object> map) throws Exception;
+	
+	//댓글 목록
+	public List<BoardComment> getCommentList(int postNo) throws Exception;
 	
 	//게시판 등록 글 수
 	public int getTotalCount3(int boardNo) throws Exception;
@@ -58,11 +65,23 @@ public interface BoardService {
 	//회원의 데이터
 	public Member getMemberData(int memberNo) throws Exception;
 	
+	//게시글의 모든 파일 데이터
+	public List<BoardFile> getPostFile(int postNo) throws Exception;
+	
+	//파일 데이터
+	public BoardFile getFileData(int fileNo) throws Exception;
+	
 	//게시판 선택 삭제
 	public void deleteChoiceBoard(int boardNo) throws Exception;
 	
 	//게시글 선택 삭제
 	public void deleteChoicePost(int postNo) throws Exception;
+	
+	//파일 삭제
+	public void deleteFile(int fileNo) throws Exception;
+	
+	//댓글 삭제
+	public void deleteComment(int commentNo) throws Exception;
 	
 	//게시판 수정(게시판, 권한, 옵션) 
 	public int updateBoard(Board board) throws Exception;

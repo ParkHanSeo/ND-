@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import com.naedam.mir9.board.model.vo.Board;
 import com.naedam.mir9.board.model.vo.BoardAuthority;
+import com.naedam.mir9.board.model.vo.BoardComment;
 import com.naedam.mir9.board.model.vo.BoardFile;
 import com.naedam.mir9.board.model.vo.BoardOption;
 import com.naedam.mir9.board.model.vo.BoardTranslate;
@@ -68,6 +69,12 @@ public class BoardDaoImpl implements BoardDao {
 		return sqlSession.insert("board.addFile", boardFile);
 	}
 	
+	//댓글 등록
+	@Override
+	public int addComment(BoardComment boardComment) throws Exception {
+		return sqlSession.insert("board.addComment", boardComment);
+	}
+	
 	//게시판 목록
 	@Override
 	public List<Board> getBoardList(Map<String, Object> map) throws Exception {
@@ -95,6 +102,12 @@ public class BoardDaoImpl implements BoardDao {
 	@Override
 	public List<Post> getPostList(Map<String, Object> map) throws Exception {
 		return sqlSession.selectList("board.getPostList", map);
+	}
+	
+	//댓글 목록
+	@Override
+	public List<BoardComment> getCommentList(int postNo) throws Exception {
+		return sqlSession.selectList("board.getCommentList", postNo);
 	}
 	
 	//header의 게시판 제목
@@ -127,6 +140,19 @@ public class BoardDaoImpl implements BoardDao {
 		return sqlSession.selectOne("board.getMemberData", memberNo);
 	}
 	
+	//게시글의 파일 데이터
+	@Override
+	public List<BoardFile> getPostFile(int postNo) throws Exception {
+		return sqlSession.selectList("board.getPostFile", postNo);
+	}
+	
+	//파일 데이터
+	@Override
+	public BoardFile getFileData(int fileNo) throws Exception {
+		return sqlSession.selectOne("board.getFileData", fileNo);
+	}
+
+	
 	//게시판 선택 산제
 	@Override
 	public void deleteChoiceBoard(int boardNo) throws Exception {
@@ -137,6 +163,18 @@ public class BoardDaoImpl implements BoardDao {
 	@Override
 	public void deleteChoicePost(int postNo) throws Exception {
 		sqlSession.delete("board.deleteChoicePost", postNo);
+	}
+	
+	//파일 삭제
+	@Override
+	public void deleteFile(int fileNo) throws Exception {
+		sqlSession.delete("board.deleteFile", fileNo);
+	}
+	
+	//댓글 삭제
+	@Override
+	public void deleteComment(int commentNo) throws Exception {
+		sqlSession.delete("board.deleteComment", commentNo);
 	}
 	
 	//게시판 수정 (게시판, 권한, 옵션) 시작 //////////////////////////////
@@ -179,6 +217,19 @@ public class BoardDaoImpl implements BoardDao {
 	public int updatePostReply(Post post) throws Exception {
 		return sqlSession.update("board.updatePostReply", post);
 	}
+
+	
+
+	
+
+	
+
+	
+
+	
+	
+
+	
 
 
 

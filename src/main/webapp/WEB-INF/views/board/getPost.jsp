@@ -28,12 +28,109 @@
 	}
 	
 	function fncUpdatePost(){
+		var postFile = $("input[id='getPostFile']").length;
+		var postName = new Array(postFile);
+		
+		for(var i = 0; i < postFile; i++){
+			postName[i] = $("input[id='getPostFile']")[i].value;
+			alert(postName[i])
+		}
+		
 		$("form[name='getPostForm']").attr("method", "POST").attr("action", "/mir9/board/updatePost").submit();
 	}
 	
 	function fucAddFile2(){
 		$("div[name='listFile2']").append('<input type="file" name="postName" id="getPostFile" class="form-control input-sm" style="width:100%; display:inline; margin-bottom:10px;">');
 	}
+	function fncDeleteFile(fileNo){
+		
+		if(!confirm("정말 삭제 하시겠습니까?")){
+			alert("취소 되었습니다.");
+			return;
+			
+		}else{
+		$.ajax({
+			url : "/mir9/board/json/deleteFile/"+fileNo,
+			method : "GET",
+			dataType : "JSON",	
+			headers : {
+				"Accept" : "application/json",
+				"Content-Type" : "application/json"	 						
+			} ,
+			success : function(JSONData, status){
+				
+			}
+			
+		})
+		alert("파일이 삭제 되었습니다.")
+  		$("span[id='"+fileNo+"']").remove();
+		}
+		
+	}
+	
+	function downloadImg(fileNo){
+		$.ajax({
+			url : "/mir9/board/json/downloadImg/"+fileNo,
+			method : "GET",
+			dataType : "JSON",	
+			headers : {
+				"Accept" : "application/json",
+				"Content-Type" : "application/json"	 						
+			} ,
+			success : function(JSONData, status){
+				
+			}
+			
+		})
+	}
+	
+	function fncAddComment(){
+			
+		$.ajax({
+			
+			url : "/mir9/board/json/getMemberData",
+			method : "GET",
+			dataType : "JSON",
+			headers : {
+				"Accept" : "application/json",
+				"Content-Type" : "application/json"	 						
+			} ,
+			success : function(JSONData, status){
+				
+				$("input[id='commentName']").val(JSONData.lastName+JSONData.firstName);
+				$("input[id='commentMemberNo']").val(JSONData.memberNo);
+				
+			}
+		})
+		
+	}
+	
+	function deleteComment(commentNo){
+		
+		if(!confirm("정말 삭제 하시겠습니까?")){
+			alert("취소 되었습니다.");
+			return;
+			
+		}else{
+		$.ajax({
+			url : "/mir9/board/json/deleteComment/"+commentNo,
+			method : "GET",
+			dataType : "JSON",	
+			headers : {
+				"Accept" : "application/json",
+				"Content-Type" : "application/json"	 						
+			} ,
+			success : function(JSONData, status){
+				
+			}
+			
+		})
+		alert("파일이 삭제 되었습니다.")
+  		$("tr[name='comment"+commentNo+"']").remove();
+		}
+		
+	}
+
 	
 	
 	$(function(){
@@ -43,12 +140,14 @@
 			$("span[name='board_sub_title']").text('수정');
 			$("button[name='display_reply']").css("display", "")
 			$("span[name='thumbnailSpan']").remove();
+			$("span[name='getFile']").remove();
 		})
 		
 		$("#modalContent4").on("hidden.bs.modal", function(){
 			$("span[name='board_sub_title']").text('수정');
 			$("button[name='display_reply']").css("display", "")
 			$("span[name='thumbnailSpan']").remove();
+			$("span[name='getFile']").remove();
 		})
 		
 		$("button[name='getPostBotton']").on("click", function(){
@@ -64,6 +163,7 @@
 				} ,
 				success : function(JSONData, status){
 					$("input[name='postNo']").val(JSONData.postNo);
+					$("input[id='commentPostNo']").val(JSONData.postNo);
 					$("input[name='postOrd']").val(JSONData.postOrd);
 					$("input[name='postLayer']").val(JSONData.postLayer);
 					$("input[name='postAsc']").val(JSONData.postAsc);
@@ -88,14 +188,8 @@
 						$("#getPostNotice").prop("checked", false);
 					}else{
 						$("#getPostNotice").prop("checked", true);
-					}
-					
-					
-					
-					
-					
-				}
-				
+					}	
+				}				
 			})
 			
 			var memberNo = $(this).find('input').val();
@@ -131,6 +225,55 @@
 				}
 				
 			})
+			
+			
+			$.ajax({
+				url : "/mir9/board/json/getPostFile/"+postNo,
+				method : "GET",
+				dataType : "JSON",	
+				headers : {
+					"Accept" : "application/json",
+					"Content-Type" : "application/json"	 						
+				} ,
+				success : function(JSONData, status){			
+					for(var i = 0; i < JSONData.length; i++){
+						var display = "";
+						display += '<span id="'+JSONData[i].fileNo+'" name="getFile" style="float:left; position:relative; text-align:center; padding-right:15px;">'
+								+  '<a href="${pageContext.request.contextPath}/resources/imgs/imageBoard/board'+JSONData[i].fileName+'" download="">'
+								+  '<img src="${pageContext.request.contextPath}/resources/imgs/imageBoard/board'+JSONData[i].fileName+'" style="width:80px; cursor:pointer;" onclick="downloadImg('+JSONData[i].fileNo+')">'
+								+  '</a>'
+								+  '<img src="${pageContext.request.contextPath}/resources/imgs/imageBoard/delete.png" onclick="fncDeleteFile('+JSONData[i].fileNo+')" name="file'+JSONData[i].fileNo+'" style="width:30px;position: absolute;left:43px; top:3px; z-index:10; cursor:pointer;">'
+								+  '</span>';
+						$("span[id='file_list']").append(display);
+					}
+					
+				}
+				
+			})
+
+			$.ajax({
+				url : "/mir9/board/json/getCommentList/"+postNo,
+				method : "GET",
+				dataType : "JSON",	
+				headers : {
+					"Accept" : "application/json",
+					"Content-Type" : "application/json"	 						
+				} ,
+				success : function(JSONData, status){			
+					for(var i = 0; i < JSONData.length; i++){
+						var display = "";
+						display += '<tr name="comment'+JSONData[i].commentNo+'">'
+								+  '	<td>'+JSONData[i].commentWriter+'</td>'
+								+  '	<td align="left">'+JSONData[i].commentContents+'</td>'
+								+  '	<td>'+JSONData[i].commentData+'</td>'
+								+  '	<td><button type="button" class="btn btn-danger btn-xs" onclick="deleteComment('+JSONData[i].commentNo+');">삭제</button></td>'
+								+  '</tr>';
+								
+						$("tbody[id='commentList']").append(display);
+					}
+				}
+				
+			})			
 			
 			
 		})
@@ -210,7 +353,9 @@
                 <td class="menu">파일</td>
                 <td align="left">
                 <p>
-                    <span id="file_list"></span>
+                    <span id="file_list">
+
+                    </span>
                 </p>
 
                 <p style="padding-top:10px; float:left; width:100%;">
@@ -226,22 +371,18 @@
             <c:if test="${board2.option.optionComment eq 'y'}">
 			<div id="displayMemo" style="">
             	<h4>
-            		<p class="text-light-blue"><i class="fa fa-fw fa-info-circle"></i> 댓글 관리</p>
+            		<p class="text-light-blue"><i class="fa fa-fw fa-info-circle"></i> 댓글 관리
+            		<button type="button" onclick="fncAddComment()" name="comment" class="btn btn-info" data-toggle="modal" data-target="#modalContent5">댓글 작성</button>
+            		</p>
             	</h4>
             	<span id="memo_list">
             		<table class="table table-bordered">
-            			<tbody>
+            			<tbody id="commentList">
             			<tr>  
             				<td class="menu" style="width:80px;">글쓴이</td>  
             				<td class="menu">내용</td>  
             				<td class="menu" style="width:60px;">등록일</td>  
             				<td class="menu" style="width:50px;">명령</td>
-            			</tr>
-            			<tr>  
-            				<td>asd</td>  
-            				<td align="left">asd</td>  
-            				<td>2022-03-31 18:26</td>  
-            				<td><button type="button" class="btn btn-danger btn-xs" onclick="deleteMemo(69,23);">삭제</button></td>
             			</tr>
             			</tbody>
             		</table>

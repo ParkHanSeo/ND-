@@ -32,6 +32,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.naedam.mir9.board.model.service.BoardService;
 import com.naedam.mir9.board.model.vo.Board;
 import com.naedam.mir9.board.model.vo.BoardAuthority;
+import com.naedam.mir9.board.model.vo.BoardComment;
 import com.naedam.mir9.board.model.vo.BoardFile;
 import com.naedam.mir9.board.model.vo.BoardOption;
 import com.naedam.mir9.board.model.vo.Page;
@@ -108,11 +109,12 @@ public class BoardController {
 	@PostMapping("addAnswerPost")
 	public String addAnswerPost(@ModelAttribute("post") Post post,
 								@ModelAttribute("board") Board board,
-								@RequestParam("postName") MultipartFile postName,
+								@RequestParam(value="postName") MultipartFile[] postName,
 								@RequestParam("ThombnailName") MultipartFile ThombnailName) throws Exception {
 		
-		System.out.println("addPost 시작");
+		System.out.println("addAnswerPost 시작");
 		System.out.println("post 데이터 확인 ::: "+post);
+		BoardFile boardFile = new BoardFile();
 		//1번 회원이 로그인을 했다고 가정
 		Member member2 = boardService.getMemberData(1);
 		post.setPostMember(member2);
@@ -122,12 +124,17 @@ public class BoardController {
 		//파일 업로드
 		String filePath = "C:\\workspace\\NdMir9\\src\\main\\webapp\\resources\\imgs\\imageBoard\\board";
 		File file = new File(filePath+ThombnailName.getOriginalFilename());
-		File file2 = new File(filePath+postName.getOriginalFilename());
 		post.setPostBoard(board);
-		//post.setPostFile(postName.getOriginalFilename());
 		post.setPostThombnail(ThombnailName.getOriginalFilename());
-		postName.transferTo(file2);
 		ThombnailName.transferTo(file);
+		
+		for(int i = 0; i < postName.length; i++) {
+			File file2 = new File(filePath+postName[i].getOriginalFilename());
+			boardFile.setFilePost(post);;
+			boardFile.setFileName(postName[i].getOriginalFilename());
+			postName[i].transferTo(file2);
+			boardService.addFile(boardFile);
+		}
 		//파일 업로드 끝	
 		
 		
@@ -146,6 +153,13 @@ public class BoardController {
 		System.out.println("board 데이터 확인 ::: "+board);
 		
 		return "redirect:/board/postList?boardNo="+board.getBoardNo();
+	}
+	
+	@PostMapping("addComment")
+	public void updateComment(@ModelAttribute("boardComment") BoardComment boardComment,
+							  @RequestParam("postNo") int postNo,
+							  @RequestParam("memberNo") int memberNo)throws Exception{
+		System.out.println("addComment 시작"); 
 	}
 	
 	@PostMapping("updateBoard")
@@ -172,22 +186,27 @@ public class BoardController {
 	@PostMapping("updatePost")
 	public String updataPost(@ModelAttribute("post") Post post,
 							 @RequestParam("boardNo") int boardNo,
-							 @RequestParam("postName") MultipartFile postName,
+							 @RequestParam(value="postName") MultipartFile[] postName,
 						     @RequestParam("ThombnailName") MultipartFile ThombnailName) throws Exception{
 		System.out.println("updatePost 시작");
-		
+		System.out.println("file의 길이를 보자 ::: === "+postName.length);
 		Board board = new Board();
+		BoardFile boardFile = new BoardFile();
 		board.setBoardNo(boardNo);
 		
 		//파일 업로드
 		String filePath = "C:\\workspace\\NdMir9\\src\\main\\webapp\\resources\\imgs\\imageBoard\\board";
 		File file = new File(filePath+ThombnailName.getOriginalFilename());
-		File file2 = new File(filePath+postName.getOriginalFilename());
 		post.setPostBoard(board);
-		//post.setPostFile(postName.getOriginalFilename());
 		post.setPostThombnail(ThombnailName.getOriginalFilename());
-		postName.transferTo(file2);
 		ThombnailName.transferTo(file);
+		for(int i = 0; i < postName.length; i++) {
+			File file2 = new File(filePath+postName[i].getOriginalFilename());
+			boardFile.setFilePost(post);;
+			boardFile.setFileName(postName[i].getOriginalFilename());
+			postName[i].transferTo(file2);
+			boardService.addFile(boardFile);
+		}
 		//파일 업로드 끝
 		
 		boardService.updatePost(post);
@@ -354,7 +373,7 @@ public class BoardController {
 	
 	@GetMapping("test")
 	public String test() {
-		return "board/test";
+		return "board/test2";
 	}
 	
 	@PostMapping("imageUpload")
