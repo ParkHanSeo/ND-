@@ -206,6 +206,12 @@ public class BoardDaoImpl implements BoardDao {
 		return sqlSession.update("board.postViewCount" , post);
 	}
 	
+	//다운로드수
+	@Override
+	public int postFileCount(Post post) throws Exception {
+		return sqlSession.update("board.postFileCount", post);
+	}
+	
 	//썸네일 삭제이지만 업데이트
 	@Override
 	public int updateThombnail(Post post) throws Exception {
@@ -217,6 +223,8 @@ public class BoardDaoImpl implements BoardDao {
 	public int updatePostReply(Post post) throws Exception {
 		return sqlSession.update("board.updatePostReply", post);
 	}
+	
+	
 
 	
 

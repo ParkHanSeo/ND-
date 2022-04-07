@@ -32,6 +32,7 @@ public class Post implements Serializable {
 	private int postLayer;			//계층형 쿼리 2 답글의 답글
 	private int postAsc;			//순서변경
 	private int postViewCount;		//게시판종류 본횟수
+	private int postDownloadCount;  //다운로드수
 	private Member postMember;		//회원데이터
 	private String postMemberName;
 	

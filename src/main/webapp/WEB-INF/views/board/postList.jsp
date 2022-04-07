@@ -197,7 +197,7 @@
                         <td>${post.postMemberName}</td>
                         <td>${post.postDate}</td>
                         <td>${post.postViewCount}</td>
-                        <td>0</td>
+                        <td>${post.postDownloadCount}</td>
                         <td>
                 		<button type="button" name="getPostBotton" data-toggle="modal" data-target="#modalContent4" class="btn btn-primary btn-xs" value="${post.postNo}">상세보기
                 			<input type="hidden" value="${post.postMember.memberNo}">
@@ -239,7 +239,7 @@
                    				<input type="radio" name="order_code" value="${post.postOriginNo}" chack="">
                    			</td>
                    			</c:if>
-                   			<td>${post.postNo }</td>
+                   			<td>${post.postDownloadCount}</td>
                    			<td>
                    			<button type="button" name="getPostBotton" data-toggle="modal" data-target="#modalContent4" class="btn btn-primary btn-xs" value="${post.postNo}">상세보기
                    				<input type="hidden" value="${post.postMember.memberNo}">

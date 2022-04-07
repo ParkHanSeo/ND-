@@ -171,6 +171,11 @@ public class BoardServiceImpl implements BoardService {
 	}
 	
 	@Override
+	public int postFileCount(Post post) throws Exception {
+		return boardDao.postFileCount(post);
+	}
+	
+	@Override
 	public int updatePostReply(Post post) throws Exception {
 		return boardDao.updatePostReply(post);
 	}
@@ -184,6 +189,8 @@ public class BoardServiceImpl implements BoardService {
 	public int getTotalCount3(int boardNo) throws Exception {
 		return boardDao.getTotalCount3(boardNo);
 	}
+
+	
 
 
 

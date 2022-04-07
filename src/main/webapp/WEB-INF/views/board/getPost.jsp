@@ -68,9 +68,10 @@
 		
 	}
 	
-	function downloadImg(fileNo){
+	function fileDownload(postNo){
+		
 		$.ajax({
-			url : "/mir9/board/json/downloadImg/"+fileNo,
+			url : "/mir9/board/json/postFileCount/"+postNo,
 			method : "GET",
 			dataType : "JSON",	
 			headers : {
@@ -135,7 +136,6 @@
 	
 	$(function(){
 		
-		
 		$("button[name='x']").on("click", function(){
 			$("span[name='board_sub_title']").text('수정');
 			$("button[name='display_reply']").css("display", "")
@@ -149,6 +149,7 @@
 			$("span[name='thumbnailSpan']").remove();
 			$("span[name='getFile']").remove();
 		})
+		
 		
 		$("button[name='getPostBotton']").on("click", function(){
 			var postNo = $(this).val();
@@ -239,8 +240,8 @@
 					for(var i = 0; i < JSONData.length; i++){
 						var display = "";
 						display += '<span id="'+JSONData[i].fileNo+'" name="getFile" style="float:left; position:relative; text-align:center; padding-right:15px;">'
-								+  '<a href="${pageContext.request.contextPath}/resources/imgs/imageBoard/board'+JSONData[i].fileName+'" download="">'
-								+  '<img src="${pageContext.request.contextPath}/resources/imgs/imageBoard/board'+JSONData[i].fileName+'" style="width:80px; cursor:pointer;" onclick="downloadImg('+JSONData[i].fileNo+')">'
+								+  '<a href="${pageContext.request.contextPath}/resources/imgs/imageBoard/board'+JSONData[i].fileName+'" download="" value="'+postNo+'" name="fileDownload">'
+								+  '<img src="${pageContext.request.contextPath}/resources/imgs/imageBoard/board'+JSONData[i].fileName+'" style="width:80px; cursor:pointer;" onclick="fileDownload('+postNo+')">'
 								+  '</a>'
 								+  '<img src="${pageContext.request.contextPath}/resources/imgs/imageBoard/delete.png" onclick="fncDeleteFile('+JSONData[i].fileNo+')" name="file'+JSONData[i].fileNo+'" style="width:30px;position: absolute;left:43px; top:3px; z-index:10; cursor:pointer;">'
 								+  '</span>';

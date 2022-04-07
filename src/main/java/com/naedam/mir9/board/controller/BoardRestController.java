@@ -102,6 +102,16 @@ public class BoardRestController {
 		boardService.postViewCount(post);
 	}
 	
+	@GetMapping(value="json/postFileCount/{postNo}")
+	public void postFileCount(@PathVariable("postNo") int postNo) throws Exception{
+		
+		System.out.println("json/postFileCount 시작");
+		Post post = boardService.getPostData(postNo);
+		System.out.println("downloadCount 확인 ::: "+post.getPostDownloadCount()+1);
+		post.setPostDownloadCount(post.getPostDownloadCount()+1);
+		boardService.postFileCount(post);
+	}
+	
 	@GetMapping(value="json/getPostFile/{postNo}")
 	public List<BoardFile> getPostFile(@PathVariable("postNo") int postNo) throws Exception{
 		

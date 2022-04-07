@@ -103,7 +103,11 @@ public interface BoardDao {
 	//계층형 쿼리
 	public int updatePostReply(Post post) throws Exception;
 	
+	//조회수
 	public int postViewCount(Post post) throws Exception;
+	
+	//다운로드수
+	public int postFileCount(Post post) throws Exception;
 
 	
 	

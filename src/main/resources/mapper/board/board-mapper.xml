@@ -48,6 +48,7 @@
 		<result property="postDate"					column="POST_DATE"				jdbcType="VARCHAR"></result>
 		<result property="postThombnail"			column="POST_THOMBNAIL"			jdbcType="VARCHAR"></result>
 		<result property="postViewCount"			column="POST_VIEWCOUNT"			jdbcType="NUMERIC"></result>
+		<result property="postDownloadCount"		column="POST_DOWNLOADCOUNT"		jdbcType="NUMERIC"></result>
 		<result property="postBoard.boardNo"		column="BOARD_NO"				jdbcType="NUMERIC"></result>
 		<result property="postMember.memberNo"		column="MEMBER_NO"				jdbcType="NUMERIC"></result>
 		<result property="postMemberName"			column="MEMBER_NAME"			jdbcType="VARCHAR"></result>
@@ -141,6 +142,7 @@
 				  POST_DATE,
 				  POST_THOMBNAIL,
 				  POST_VIEWCOUNT,
+				  POST_DOWNLOADCOUNT,
 				  POST_NOTICE,
 				  POST_ORIGIN_NO,
 				  POST_ORD,
@@ -154,6 +156,7 @@
 			   #{postContents : VARCHAR},
 			   SYSDATE,
 			   #{postThombnail : VARCHAR},			   
+			   0,
 			   0,
 			   0,
 			   post_seq.nextVal,
@@ -320,6 +323,7 @@
 										p.post_date,
 										p.post_thombnail,
 										p.post_viewcount,
+										p.post_downloadcount,
 										p.post_notice,
 										p.post_origin_no,
 										p.post_ord,
@@ -350,6 +354,7 @@
 										p.post_date,
 										p.post_thombnail,
 										p.post_viewcount,
+										p.post_downloadcount,
 										p.post_notice,
 										p.post_origin_no,
 										p.post_ord,
@@ -431,6 +436,7 @@
 				p.post_date,
 				p.post_thombnail,
 				p.post_viewcount,
+				p.post_downloadcount,
 				p.post_notice,
 				p.post_origin_no,
 				p.post_ord,
@@ -592,6 +598,14 @@
 		<set>
 			POST_VIEWCOUNT = #{postViewCount}
 		</set>	
+		WHERE post_no = #{postNo}
+	</update>
+	
+	<update id="postFileCount" parameterType="post">
+		UPDATE POST
+		<set>
+			POST_DOWNLOADCOUNT = #{postDownloadCount}
+		</set>
 		WHERE post_no = #{postNo}
 	</update>
 	
