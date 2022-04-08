@@ -373,6 +373,11 @@ public class BoardController {
 	
 	@GetMapping("test")
 	public String test() {
+		return "board/test";
+	}
+	
+	@GetMapping("test2")
+	public String test2() {
 		return "board/test2";
 	}
 	
